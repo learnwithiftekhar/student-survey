@@ -26,6 +26,15 @@ spring:
   thymeleaf:
     cache: false
 
+  ai:
+    openai:
+      api-key: ${OPEN_AI_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.1
+
+
 logging:
   level:
     root: INFO
