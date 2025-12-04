@@ -6,6 +6,63 @@
 </head>
 <body>
 
+<th:block th:fragment="header_scripts">
+    <script th:src="@{/js/tailwind.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+
+    <style>
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .field-label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .field-value {
+            color: #1f2937;
+            white-space: pre-wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-green {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .badge-red {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-blue {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-gray {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        .error {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .error-border {
+            border-color: #dc2626 !important;
+        }
+    </style>
+</th:block>
 <!-- Navigation Bar Fragment -->
 <th:block th:fragment="navbar">
     <nav class="bg-gray-800">

@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+import java.util.Optional;
+
 @SpringBootApplication
 public class AiParadoxApplication {
 
@@ -19,7 +22,11 @@ public class AiParadoxApplication {
     public CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             User user = new User("iftekhar", passwordEncoder.encode("1234"), "ROLE_USER");
-            userRepository.save(user);
+            Optional<User> userfromDb = userRepository.findByUsername("iftekhar");
+
+            if (userfromDb.isEmpty()) {
+                userRepository.save(user);
+            }
         };
     }
 }

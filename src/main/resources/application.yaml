@@ -6,6 +6,14 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+
   jpa:
     show-sql: true
     properties:
@@ -14,4 +22,17 @@ spring:
 
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    root: INFO
+
+  file:
+    name: logs/survey-app.log
+
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <th:block th:replace="fragments::header_scripts"></th:block>
+</head>
+<body class="h-full">
+<div class="min-h-full">
+    <th:block th:replace="fragments :: navbar"></th:block>
+    <th:block th:replace="fragments :: pageHeader('Dashboard')"></th:block>
+    <!-- Main Content Fragment for dashboard -->
+    <th:block th:fragment="dashboardMain">
+        <main>
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <!-- Your content -->
+                <!-- Header -->
+                <div class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Survey Details</h1>
+                        <p class="mt-2 text-sm text-gray-600">
+                            Survey ID: <span class="font-semibold" th:text="${survey.id}">1</span>
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+
+                        <a href="dashboard"
+                           class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">
+                            Back to List
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Survey Content -->
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="p-8">
+
+                        <!-- Basic Information Section -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">Basic Information</h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Name -->
+                                <div>
+                                    <p class="field-label">1. Name</p>
+                                    <p class="field-value mt-1" th:text="${survey.name}">John Doe</p>
+                                </div>
+
+                                <!-- Student ID -->
+                                <div>
+                                    <p class="field-label">2. Student ID</p>
+                                    <p class="field-value mt-1" th:text="${survey.studentId}">STU001</p>
+                                </div>
+
+                                <!-- Age -->
+                                <div>
+                                    <p class="field-label">3. Age</p>
+                                    <p class="field-value mt-1" th:text="${survey.age}">22</p>
+                                </div>
+
+                                <!-- Level of Study -->
+                                <div>
+                                    <p class="field-label">4. Level of Study</p>
+                                    <span class="badge badge-blue mt-1" th:text="${survey.levelOfStudy}">Bachelor's</span>
+                                </div>
+
+                                <!-- Academic Year and Semester -->
+                                <div>
+                                    <p class="field-label">5. Current Academic Year and Semester</p>
+                                    <p class="mt-1">
+                                    <span th:switch="${survey.academicYearSemester}">
+                                        <span th:case="'111'">Bachelor 1st Year 1st Semester</span>
+                                        <span th:case="'112'">Bachelor 1st Year 2nd Semester</span>
+                                        <span th:case="'121'">Bachelor 2nd Year 1st Semester</span>
+                                        <span th:case="'122'">Bachelor 2nd Year 2nd Semester</span>
+                                        <span th:case="'131'">Bachelor 3rd Year 1st Semester</span>
+                                        <span th:case="'132'">Bachelor 3rd Year 2nd Semester</span>
+                                        <span th:case="'141'">Bachelor 4th Year 1st Semester</span>
+                                        <span th:case="'142'">Bachelor 4th Year 2nd Semester</span>
+                                        <span th:case="'211'">Master's 1st Year 1st Semester</span>
+                                        <span th:case="'212'">Master's 1st Year 2nd Semester</span>
+                                        <span th:case="*" th:text="${survey.academicYearSemester}">Unknown</span>
+                                    </span>
+                                    </p>
+                                </div>
+
+                                <!-- Location -->
+                                <div>
+                                    <p class="field-label">6. Where do you come from?</p>
+                                    <span class="badge badge-gray mt-1" th:text="${survey.location}">Urban</span>
+                                </div>
+
+                                <!-- Devices -->
+                                <div class="col-span-full">
+                                    <p class="field-label">7. Devices</p>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                    <span th:each="device : ${survey.devices}"
+                                          class="badge badge-blue" th:text="${device}">Mobile</span>
+                                    </div>
+                                    <p th:if="${survey.devicesOthersSpecify != null and !survey.devicesOthersSpecify.isEmpty()}"
+                                       class="field-value mt-2 text-sm">
+                                        <span class="field-label">Other devices:</span>
+                                        <span th:text="${survey.devicesOthersSpecify}"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Internet Access -->
+                                <div>
+                                    <p class="field-label">8. Full-time Internet Access</p>
+                                    <span th:if="${survey.internetAccess == 'Yes'}" class="badge badge-green mt-1">Yes</span>
+                                    <span th:if="${survey.internetAccess == 'No'}" class="badge badge-red mt-1">No</span>
+                                </div>
+
+                                <!-- Hours Online -->
+                                <div>
+                                    <p class="field-label">9. Hours Online per Day</p>
+                                    <p class="field-value mt-1" th:text="${survey.hoursOnline}">4-8 hours</p>
+                                </div>
+
+                                <!-- Familiar with AI -->
+                                <div>
+                                    <p class="field-label">10. Familiar with AI Tools</p>
+                                    <span th:if="${survey.familiarWithAI == 'Yes'}" class="badge badge-green mt-1">Yes</span>
+                                    <span th:if="${survey.familiarWithAI == 'No'}" class="badge badge-red mt-1">No</span>
+                                </div>
+
+                                <!-- Use AI Tools -->
+                                <div>
+                                    <p class="field-label">11. Uses AI Tools for Academic Activities</p>
+                                    <span th:if="${survey.useAITools == 'Yes'}" class="badge badge-green mt-1">Yes</span>
+                                    <span th:if="${survey.useAITools == 'No'}" class="badge badge-red mt-1">No</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Tools Used Section -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">12. AI Tools Used for Academic Purposes</h2>
+
+                            <!-- Study Tools -->
+                            <div class="mb-6" th:if="${survey.studyTools != null and !survey.studyTools.isEmpty()}">
+                                <p class="field-label mb-2">a) For Studying & Learning Support</p>
+                                <div class="flex flex-wrap gap-2">
+                                <span th:each="tool : ${survey.studyTools}"
+                                      class="badge badge-blue" th:text="${tool}">ChatGPT</span>
+                                </div>
+                            </div>
+
+                            <!-- Writing Tools -->
+                            <div class="mb-6" th:if="${survey.writingTools != null and !survey.writingTools.isEmpty()}">
+                                <p class="field-label mb-2">b) For Writing & Editing</p>
+                                <div class="flex flex-wrap gap-2">
+                                <span th:each="tool : ${survey.writingTools}"
+                                      class="badge badge-blue" th:text="${tool}">Grammarly</span>
+                                </div>
+                            </div>
+
+                            <!-- Note Tools -->
+                            <div class="mb-6" th:if="${survey.noteTools != null and !survey.noteTools.isEmpty()}">
+                                <p class="field-label mb-2">c) For Note-taking & Summarizing</p>
+                                <div class="flex flex-wrap gap-2">
+                                <span th:each="tool : ${survey.noteTools}"
+                                      class="badge badge-blue" th:text="${tool}">Otter.ai</span>
+                                </div>
+                            </div>
+
+                            <!-- Research Tools -->
+                            <div class="mb-6" th:if="${survey.researchTools != null and !survey.researchTools.isEmpty()}">
+                                <p class="field-label mb-2">d) For Research</p>
+                                <div class="flex flex-wrap gap-2">
+                                <span th:each="tool : ${survey.researchTools}"
+                                      class="badge badge-blue" th:text="${tool}">Elicit</span>
+                                </div>
+                            </div>
+
+                            <!-- Presentation Tools -->
+                            <div class="mb-6" th:if="${survey.presentationTools != null and !survey.presentationTools.isEmpty()}">
+                                <p class="field-label mb-2">e) For Presentations & Visuals</p>
+                                <div class="flex flex-wrap gap-2">
+                                <span th:each="tool : ${survey.presentationTools}"
+                                      class="badge badge-blue" th:text="${tool}">Canva</span>
+                                </div>
+                            </div>
+
+                            <div th:if="${(survey.studyTools == null or survey.studyTools.isEmpty()) and
+                                      (survey.writingTools == null or survey.writingTools.isEmpty()) and
+                                      (survey.noteTools == null or survey.noteTools.isEmpty()) and
+                                      (survey.researchTools == null or survey.researchTools.isEmpty()) and
+                                      (survey.presentationTools == null or survey.presentationTools.isEmpty())}"
+                                 class="text-gray-500 italic">
+                                No AI tools selected
+                            </div>
+                        </div>
+
+                        <!-- Section A -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">Section A: Interpretation & Clarification</h2>
+
+                            <!-- Question 13 -->
+                            <div class="mb-6">
+                                <p class="field-label">13. How often do you use AI tools for your academic work?</p>
+                                <span class="badge badge-blue mt-1" th:text="${survey.aiUsageFrequency}">Daily</span>
+                            </div>
+
+                            <!-- Question 14 -->
+                            <div class="mb-6">
+                                <p class="field-label">14. How did you first learn about these AI tools?</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.learnedAboutAI}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 15 -->
+                            <div class="mb-6">
+                                <p class="field-label">15. Core Problem Summary (Max 120 words)</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.coreProblemSummary}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 16 -->
+                            <div class="mb-6">
+                                <p class="field-label">16. Peripheral Higher Education Explanation</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.peripheralEducation}">Response text...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section B -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">Section B: Analysis of Assumptions & Arguments</h2>
+
+                            <!-- Question 17 -->
+                            <div class="mb-6">
+                                <p class="field-label">17. Implicit Assumptions Analysis</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.implicitAssumptions}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 18 -->
+                            <div class="mb-6">
+                                <p class="field-label">18. Argument Analysis</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.argumentAnalysis}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 19 -->
+                            <div class="mb-6">
+                                <p class="field-label">19. Evidence vs Opinion Analysis</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.evidenceVsOpinion}">Response text...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section C -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">Section C: Inference, Causal Reasoning & Alternative Explanations</h2>
+
+                            <!-- Question 20 -->
+                            <div class="mb-6">
+                                <p class="field-label">20. Table Inferences</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.tableInferences}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 21 -->
+                            <div class="mb-6">
+                                <p class="field-label">21. Research Design</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.researchDesign}">Response text...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section D -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-bold text-gray-900 section-title">Section D: Self-Regulation & Meta-Reflection</h2>
+
+                            <!-- Question 22 -->
+                            <div class="mb-6">
+                                <p class="field-label">22. Learning Benefit (120-150 words)</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.learningBenefit}">Response text...</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 23 -->
+                            <div class="mb-6">
+                                <p class="field-label">23. AI Usage Reflection</p>
+                                <div class="mt-2 p-4 bg-gray-200 rounded-md">
+                                    <p class="field-value" th:text="${survey.aiUsageReflection}">Response text...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Section -->
+                        <div class="border-t pt-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-4">Survey Metadata</h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span class="field-label">Survey ID:</span>
+                                    <span class="field-value ml-2" th:text="${survey.id}">1</span>
+                                </div>
+
+                                <div>
+                                    <span class="field-label">Status:</span>
+                                    <span th:if="${survey.isCompleted}" class="badge badge-green ml-2">Completed</span>
+                                    <span th:if="${!survey.isCompleted}" class="badge badge-red ml-2">Incomplete</span>
+                                </div>
+
+                                <div>
+                                    <span class="field-label">Submitted At:</span>
+                                    <span class="field-value ml-2"
+                                          th:text="${#temporals.format(survey.createdAt, 'MMM dd, yyyy HH:mm:ss')}">Jan 01, 2024 10:30:00</span>
+                                </div>
+
+                                <div>
+                                    <span class="field-label">Last Updated:</span>
+                                    <span class="field-value ml-2"
+                                          th:text="${#temporals.format(survey.updatedAt, 'MMM dd, yyyy HH:mm:ss')}">Jan 01, 2024 10:30:00</span>
+                                </div>
+
+                                <div th:if="${survey.submittedByIp != null and !survey.submittedByIp.isEmpty()}">
+                                    <span class="field-label">IP Address:</span>
+                                    <span class="field-value ml-2" th:text="${survey.submittedByIp}">192.168.1.1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Footer -->
+                    <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex gap-3">
+                                <button onclick="window.print()"
+                                        class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition text-sm font-medium">
+                                    Print / PDF
+                                </button>
+                            </div>
+
+                            <a th:href="@{/dashboard}"
+                               class="text-indigo-600 hover:text-indigo-900 font-medium text-sm">
+                                ← Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <div class="mt-6 flex justify-between text-sm">
+                    <a th:href="@{/dashboard}" class="text-indigo-600 hover:text-indigo-900">Go to Homepage →</a>
+                </div>
+            </div>
+        </main>
+    </th:block>
+</div>
+</body>
+</html>

@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html
+        lang="en" class="h-full bg-gray-100"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Student AI Usage Survey</title>
+    <th:block th:replace="fragments::header_scripts"></th:block>
+</head>
+<body class="h-full">
+<div class="min-h-full">
+
+    <th:block sec:authorize="hasRole('USER')" th:replace="fragments :: navbar"></th:block>
+<!--    <th:block th:replace="fragments :: pageHeader('Student Form')"></th:block>-->
+    <!-- Main Content Fragment for dashboard -->
+
+    <div class="max-w-4xl mx-auto mb-4 py-10">
+        <div class="bg-white shadow-sm rounded-lg">
+            <div class="px-6 py-8">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Student AI Usage Survey</h1>
+                    <p class="mt-2 text-sm text-gray-600">This survey aims to understand how students use AI tools in their academic activities and their impact on learning and critical thinking.</p>
+                </div>
+
+                <form id="studentSurveyForm" th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
+
+                    <!-- Basic Information Section -->
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Basic Information</h2>
+
+                            <!-- Question 1: Name -->
+                            <div class="mb-6">
+                                <label for="name" class="block text-sm font-medium text-gray-900">1. Name <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <input type="text" id="name" name="name" th:field="*{name}" maxlength="100"
+                                           class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                </div>
+                            </div>
+
+                            <!-- Question 2: Student ID -->
+                            <div class="mb-6">
+                                <label for="studentId" class="block text-sm font-medium text-gray-900">2. Student ID <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <input type="text" id="studentId" name="studentId" th:field="*{studentId}" maxlength="100"
+                                           class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                </div>
+                            </div>
+
+                            <!-- Question 3: Age -->
+                            <div class="mb-6">
+                                <label for="age" class="block text-sm font-medium text-gray-900">3. Age <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <input type="number" id="age" name="age" th:field="*{age}" min="18" max="35"
+                                           class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                </div>
+                            </div>
+
+                            <!-- Question 4: Level of Study -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">4. Level of Study <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="level-bachelors" type="radio" name="levelOfStudy" value="Bachelor's" th:field="*{levelOfStudy}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="level-bachelors" class="block text-sm text-gray-900">Bachelor's</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="level-masters" type="radio" name="levelOfStudy" value="Master's" th:field="*{levelOfStudy}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="level-masters" class="block text-sm text-gray-900">Master's</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 5: Current Academic Year and Semester -->
+                            <div class="mb-6">
+                                <label for="academicYearSemester" class="block text-sm font-medium text-gray-900">5. Current Academic Year and Semester <span class="text-red-600">*</span></label>
+                                <div class="mt-2 grid grid-cols-1">
+                                    <select id="academicYearSemester" name="academicYearSemester" th:field="*{academicYearSemester}"
+                                            class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                                        <option value="">Select your current year and semester</option>
+                                        <option value="111">Bachelor 1st Year 1st Semester</option>
+                                        <option value="112">Bachelor 1st Year 2nd Semester</option>
+                                        <option value="121">Bachelor 2nd Year 1st Semester</option>
+                                        <option value="122">Bachelor 2nd Year 2nd Semester</option>
+                                        <option value="131">Bachelor 3rd Year 1st Semester</option>
+                                        <option value="132">Bachelor 3rd Year 2nd Semester</option>
+                                        <option value="141">Bachelor 4th Year 1st Semester</option>
+                                        <option value="142">Bachelor 4th Year 2nd Semester</option>
+                                        <option value="211">Master's 1st Year 1st Semester</option>
+                                        <option value="212">Master's 1st Year 2nd Semester</option>
+                                    </select>
+                                    <svg viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                                        <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Question 6: Where do you come from -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">6. Where do you come from? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="location-rural" type="radio" name="location" value="Rural" th:field="*{location}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="location-rural" class="block text-sm text-gray-900">Rural</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="location-urban" type="radio" name="location" value="Urban" th:field="*{location}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="location-urban" class="block text-sm text-gray-900">Urban</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 7: Devices -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">7. Which of the following device(s) do you have? (You may select more than one option.) <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-4" id="devices-group">
+                                        <div class="flex gap-3">
+                                            <div class="flex h-6 shrink-0 items-center">
+                                                <div class="group grid size-4 grid-cols-1">
+                                                    <input id="device-mobile" type="checkbox" name="devices" value="Mobile" th:field="*{devices}"
+                                                           class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <label for="device-mobile" class="text-sm text-gray-900">Mobile devices (Smartphone, Smartwatches)</label>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <div class="flex h-6 shrink-0 items-center">
+                                                <div class="group grid size-4 grid-cols-1">
+                                                    <input id="device-laptop" type="checkbox" name="devices" value="Laptop" th:field="*{devices}"
+                                                           class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <label for="device-laptop" class="text-sm text-gray-900">Laptop</label>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <div class="flex h-6 shrink-0 items-center">
+                                                <div class="group grid size-4 grid-cols-1">
+                                                    <input id="device-desktop" type="checkbox" name="devices" value="Desktop" th:field="*{devices}"
+                                                           class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <label for="device-desktop" class="text-sm text-gray-900">Desktop</label>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <div class="flex h-6 shrink-0 items-center">
+                                                <div class="group grid size-4 grid-cols-1">
+                                                    <input id="device-tablets" type="checkbox" name="devices" value="Tablets" th:field="*{devices}"
+                                                           class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <label for="device-tablets" class="text-sm text-gray-900">Tablets</label>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <div class="flex h-6 shrink-0 items-center">
+                                                <div class="group grid size-4 grid-cols-1">
+                                                    <input id="device-others" type="checkbox" name="devices" value="Others"
+                                                           class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <label for="device-others" class="text-sm text-gray-900">Others (please specify):</label>
+                                        </div>
+                                        <div class="ml-7">
+                                            <input type="text" id="devicesOthersSpecify" name="devicesOthersSpecify" th:field="*{devicesOthersSpecify}" placeholder="Please specify other devices"
+                                                   class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 8: Internet Access -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">8. Do you have full-time internet access? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="internet-yes" type="radio" name="internetAccess" value="Yes" th:field="*{internetAccess}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="internet-yes" class="block text-sm text-gray-900">Yes</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="internet-no" type="radio" name="internetAccess" value="No" th:field="*{internetAccess}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="internet-no" class="block text-sm text-gray-900">No</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 9: Hours Online -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">9. How many hours a day do you spend online? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="hours-less1" type="radio" name="hoursOnline" value="< 1 hour" th:field="*{hoursOnline}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="hours-less1" class="block text-sm text-gray-900">< 1 hour</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="hours-1-3" type="radio" name="hoursOnline" value="1-3 hours" th:field="*{hoursOnline}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="hours-1-3" class="block text-sm text-gray-900">1-3 hours</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="hours-4-8" type="radio" name="hoursOnline" value="4-8 hours" th:field="*{hoursOnline}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="hours-4-8" class="block text-sm text-gray-900">4-8 hours</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="hours-more8" type="radio" name="hoursOnline" value="> 8 hours" th:field="*{hoursOnline}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="hours-more8" class="block text-sm text-gray-900">> 8 hours</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 10: Familiar with AI -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">10. Are you familiar with artificial intelligence (AI) tools used in education? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="familiar-yes" type="radio" name="familiarWithAI" value="Yes" th:field="*{familiarWithAI}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="familiar-yes" class="block text-sm text-gray-900">Yes</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="familiar-no" type="radio" name="familiarWithAI" value="No" th:field="*{familiarWithAI}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="familiar-no" class="block text-sm text-gray-900">No</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 11: Use AI Tools -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">11. Do you use AI tools for your academic activities? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="useai-yes" type="radio" name="useAITools" value="Yes" th:field="*{useAITools}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="useai-yes" class="block text-sm text-gray-900">Yes</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="useai-no" type="radio" name="useAITools" value="No" th:field="*{useAITools}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="useai-no" class="block text-sm text-gray-900">No</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <!-- Question 12: AI Tools Used -->
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">12. AI Tools Used for Academic Purposes</h2>
+                            <p class="text-sm text-gray-600 mb-6">If you do not use AI tools, please skip this question. Otherwise, please check the tools you have used.</p>
+
+                            <div class="mb-8">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">a) For Studying & Learning Support</h3>
+                                <div class="space-y-3">
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="chatgpt" type="checkbox" name="studyTools" value="ChatGPT" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="chatgpt" class="text-sm text-gray-900">ChatGPT – Explains concepts, solves problems, helps with assignments</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="khanmigo" type="checkbox" name="studyTools" value="Khanmigo" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="khanmigo" class="text-sm text-gray-900">Khanmigo (Khan Academy) – AI tutor for personalized learning</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="perplexity-ai" type="checkbox" name="studyTools" value="Perplexity AI" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="perplexity-ai" class="text-sm text-gray-900">Perplexity AI – Answers academic questions with sources</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="elicit" type="checkbox" name="studyTools" value="Elicit" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="elicit" class="text-sm text-gray-900">Elicit – Helps with finding academic papers and summarizing them</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="scispace" type="checkbox" name="studyTools" value="SciSpace" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="scispace" class="text-sm text-gray-900">SciSpace (formerly Typeset) – Explains scientific papers and concepts</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="wolfram-alpha" type="checkbox" name="studyTools" value="Wolfram Alpha" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="wolfram-alpha" class="text-sm text-gray-900">Wolfram Alpha – Solves complex math and science problems with steps</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="notion-ai" type="checkbox" name="studyTools" value="Notion AI" th:field="*{studyTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="notion-ai" class="text-sm text-gray-900">Notion AI – Organizes study notes, generates summaries, and to-do lists</label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">b) For Writing & Editing</h3>
+                                <div class="space-y-3">
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="grammarly" type="checkbox" name="writingTools" value="Grammarly" th:field="*{writingTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="grammarly" class="text-sm text-gray-900">Grammarly – Checks grammar, spelling, and clarity in writing</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="quillbot" type="checkbox" name="writingTools" value="Quillbot" th:field="*{writingTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="quillbot" class="text-sm text-gray-900">Quillbot – Paraphrasing and summarizing academic texts</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="jenni-ai" type="checkbox" name="writingTools" value="Jenni AI" th:field="*{writingTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="jenni-ai" class="text-sm text-gray-900">Jenni AI – Assists in writing essays and academic content</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="trinka-ai" type="checkbox" name="writingTools" value="Trinka AI" th:field="*{writingTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="trinka-ai" class="text-sm text-gray-900">Trinka AI – Academic grammar checker, useful for formal writing</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="paperpal" type="checkbox" name="writingTools" value="Paperpal" th:field="*{writingTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="paperpal" class="text-sm text-gray-900">Paperpal – Enhances academic writing quality and tone</label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">c) For Note-taking & Summarizing</h3>
+                                <div class="space-y-3">
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="scribe-ai" type="checkbox" name="noteTools" value="Scribe AI" th:field="*{noteTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="scribe-ai" class="text-sm text-gray-900">Scribe AI – Summarizes lectures or recorded class discussions</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="otterai" type="checkbox" name="noteTools" value="Otter.ai" th:field="*{noteTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="otterai" class="text-sm text-gray-900">Otter.ai – Transcribes and summarizes audio/video lectures</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="scholarcy" type="checkbox" name="noteTools" value="Scholarcy" th:field="*{noteTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="scholarcy" class="text-sm text-gray-900">Scholarcy – Summarizes academic articles and papers</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="notion-ai-note" type="checkbox" name="noteTools" value="Notion AI Note" th:field="*{noteTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="notion-ai-note" class="text-sm text-gray-900">Notion AI – Auto-generates summaries and organizes study notes</label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">d) For Research</h3>
+                                <div class="space-y-3">
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="elicit-research" type="checkbox" name="researchTools" value="Elicit Research" th:field="*{researchTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="elicit-research" class="text-sm text-gray-900">Elicit – Literature review tool that finds relevant research papers</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="sciteai" type="checkbox" name="researchTools" value="Scite.ai" th:field="*{researchTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="sciteai" class="text-sm text-gray-900">Scite.ai – Helps evaluate sources by showing citation context</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="zotero-ai" type="checkbox" name="researchTools" value="Zotero AI" th:field="*{researchTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="zotero-ai" class="text-sm text-gray-900">Zotero AI (with plugin) – Helps manage references with AI support</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="mendeley" type="checkbox" name="researchTools" value="Mendeley" th:field="*{researchTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="mendeley" class="text-sm text-gray-900">Mendeley – Reference management and research organizing tool</label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">e) For Presentations & Visuals</h3>
+                                <div class="space-y-3">
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="canva-magic-write" type="checkbox" name="presentationTools" value="Canva Magic Write" th:field="*{presentationTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="canva-magic-write" class="text-sm text-gray-900">Canva Magic Write – Creates visual content and short descriptions for projects</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="slidesaiio" type="checkbox" name="presentationTools" value="SlidesAI.io" th:field="*{presentationTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="slidesaiio" class="text-sm text-gray-900">SlidesAI.io – Turns text into presentation slides automatically</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="gamma" type="checkbox" name="presentationTools" value="Gamma" th:field="*{presentationTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="gamma" class="text-sm text-gray-900">Gamma: AI Powerpoint Creation</label>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <div class="flex h-6 shrink-0 items-center">
+                                            <div class="group grid size-4 grid-cols-1">
+                                                <input id="presentationsai" type="checkbox" name="presentationTools" value="Presentations.AI" th:field="*{presentationTools}"
+                                                       class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white">
+                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <label for="presentationsai" class="text-sm text-gray-900">Presentations.AI AI Presentation Maker & Slide Creator</label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Section A: Interpretation & Clarification -->
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section A: Interpretation & Clarification</h2>
+
+                            <!-- Question 13 -->
+                            <div class="mb-6">
+                                <fieldset>
+                                    <legend class="text-sm font-medium text-gray-900 mb-3">13. How often do you use AI tools for your academic work? <span class="text-red-600">*</span></legend>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="freq-daily" type="radio" name="aiUsageFrequency" value="Daily" th:field="*{aiUsageFrequency}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="freq-daily" class="block text-sm text-gray-900">Daily</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="freq-weekly" type="radio" name="aiUsageFrequency" value="Weekly" th:field="*{aiUsageFrequency}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="freq-weekly" class="block text-sm text-gray-900">Weekly</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="freq-occasionally" type="radio" name="aiUsageFrequency" value="Occasionally" th:field="*{aiUsageFrequency}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="freq-occasionally" class="block text-sm text-gray-900">Occasionally</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="freq-rarely" type="radio" name="aiUsageFrequency" value="Rarely" th:field="*{aiUsageFrequency}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="freq-rarely" class="block text-sm text-gray-900">Rarely</label>
+                                        </div>
+                                        <div class="flex items-center gap-x-3">
+                                            <input id="freq-never" type="radio" name="aiUsageFrequency" value="Never" th:field="*{aiUsageFrequency}"
+                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                                            <label for="freq-never" class="block text-sm text-gray-900">Never</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Question 14 -->
+                            <div class="mb-6">
+                                <label for="learnedAboutAI" class="block text-sm font-medium text-gray-900">14. How did you first learn about these AI tools? <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="learnedAboutAI" name="learnedAboutAI" th:field="*{learnedAboutAI}" rows="4"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Question 15 -->
+                            <div class="mb-6">
+                                <label for="coreProblemSummary" class="block text-sm font-medium text-gray-900">15. In your own words, summarise the core problem presented in the case in no more than 120 words. Your summary should clearly show: a) The role of AI in students' academic performance, and b) The concern about students' critical thinking. <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="coreProblemSummary" name="coreProblemSummary" th:field="*{coreProblemSummary}" rows="5"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                    <p class="mt-2 text-sm text-gray-600">Maximum 120 words. Current: <span id="q15-word-count">0</span> words</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 16 -->
+                            <div class="mb-6">
+                                <label for="peripheralEducation" class="block text-sm font-medium text-gray-900">16. Explain what is meant by "peripheral higher education" in this context. How might "peripherality" shape both the adoption and the impact of AI tools in the sociology classroom? <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="peripheralEducation" name="peripheralEducation" th:field="*{peripheralEducation}" rows="5"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section B: Analysis of Assumptions & Arguments -->
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section B: Analysis of Assumptions & Arguments</h2>
+
+                            <!-- Question 17 -->
+                            <div class="mb-6">
+                                <label for="implicitAssumptions" class="block text-sm font-medium text-gray-900">17. Identify three implicit assumptions made by university management when they interpret higher grades as evidence of "smart learning" success. For each assumption, explain why it may be problematic from a sociological perspective. (You may phrase as bullet points.) <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="implicitAssumptions" name="implicitAssumptions" th:field="*{implicitAssumptions}" rows="8"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Question 18 -->
+                            <div class="mb-6">
+                                <label for="argumentAnalysis" class="block text-sm font-medium text-gray-900">18. A colleague argues: "AI is democratising knowledge. For peripheral universities, anything that raises grades is good. Critical thinking is a luxury; our students first need high marks to compete in the job market." a) Reconstruct this argument in standard form (premises + conclusion). b) Critically analyse the strengths and weaknesses of this argument using at least two sociological concepts (e.g., meritocracy, symbolic capital, neoliberalism, digital divide, hidden curriculum). <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="argumentAnalysis" name="argumentAnalysis" th:field="*{argumentAnalysis}" rows="10"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Question 19 -->
+                            <div class="mb-6">
+                                <label for="evidenceVsOpinion" class="block text-sm font-medium text-gray-900">19. From the case, list three pieces of evidence and three opinions / interpretations (either by teachers, students, or management). Then explain how confusing evidence with opinion can mislead decision-making about AI policy in the department. <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="evidenceVsOpinion" name="evidenceVsOpinion" th:field="*{evidenceVsOpinion}" rows="8"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section C: Inference, Causal Reasoning & Alternative Explanations -->
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section C: Inference, Causal Reasoning & Alternative Explanations</h2>
+
+                            <!-- Question 20 -->
+                            <div class="mb-6">
+                                <label for="tableInferences" class="block text-sm font-medium text-gray-900">20. Based on Table 1, what inferences can you reasonably draw about the relationship between AI use, academic performance, and critical thinking (as proxied by participation and confidence)? Your answer should: a) Identify at least two possible interpretations of the pattern (e.g., AI helps writing but weakens oral argument), and b) Discuss at least one alternative explanation that does not blame AI alone. <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="tableInferences" name="tableInferences" th:field="*{tableInferences}" rows="8"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Question 21 -->
+                            <div class="mb-6">
+                                <label for="researchDesign" class="block text-sm font-medium text-gray-900">21. Suppose you are asked to design a small empirical study within the department to test whether AI use is actually diminishing critical thinking among sociology students. Briefly outline: a) Your research question and hypothesis. b) The key variables (at least one independent and one dependent variable; mention possible confounders). c) Your basic design (e.g., comparison of AI users vs non-users, pre-test/post-test, mixed methods). d) One ethical concern related to AI use in this research. <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="researchDesign" name="researchDesign" th:field="*{researchDesign}" rows="10"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section D: Self-Regulation & Meta-Reflection -->
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section D: Self-Regulation & Meta-Reflection</h2>
+
+                            <!-- Question 22 -->
+                            <div class="mb-6">
+                                <label for="learningBenefit" class="block text-sm font-medium text-gray-900">22. Do you think your own learning in sociology would benefit more from: a) Limited or no AI use, or b) Guided / critical use of AI tools? Choose one and justify your position in about 120–150 words, drawing on at least one sociological theory or concept (e.g., habitus, disciplinary power, rationalisation, McDonaldization, etc.). <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="learningBenefit" name="learningBenefit" th:field="*{learningBenefit}" rows="6"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                    <p class="mt-2 text-sm text-gray-600">Word range: 120–150 words. Current: <span id="q22-word-count">0</span> words</p>
+                                </div>
+                            </div>
+
+                            <!-- Question 23 -->
+                            <div class="mb-6">
+                                <label for="aiUsageReflection" class="block text-sm font-medium text-gray-900">23. Briefly describe how you used AI during this test (or why you chose not to). Evaluate: a) In which question(s) did AI genuinely help your critical thinking, and b) In which question(s) do you think AI may have weakened your independent thinking? Be as honest and specific as possible. <span class="text-red-600">*</span></label>
+                                <div class="mt-2">
+                                    <textarea id="aiUsageReflection" name="aiUsageReflection" th:field="*{aiUsageReflection}" rows="6"
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <button type="button" onclick="window.history.back()" class="text-sm font-semibold text-gray-900">Cancel</button>
+                        <button type="submit" class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit Survey</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- bg-white shadow-sm rounded-lg -->
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Word count functionality
+        function countWords(text) {
+            return text.trim().split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+        }
+
+        // Word counter for Question 15 (max 120 words)
+        $('#coreProblemSummary').on('input', function() {
+            var wordCount = countWords($(this).val());
+            $('#q15-word-count').text(wordCount);
+            if (wordCount > 120) {
+                $('#q15-word-count').css('color', '#dc2626');
+            } else {
+                $('#q15-word-count').css('color', '#6b7280');
+            }
+        });
+
+        // Word counter for Question 22 (120-150 words)
+        $('#learningBenefit').on('input', function() {
+            var wordCount = countWords($(this).val());
+            $('#q22-word-count').text(wordCount);
+            if (wordCount < 120 || wordCount > 150) {
+                $('#q22-word-count').css('color', '#dc2626');
+            } else {
+                $('#q22-word-count').css('color', '#16a34a');
+            }
+        });
+
+        // Handle "Others" device checkbox
+        $('#device-others').change(function() {
+            if ($(this).is(':checked')) {
+                $('#devicesOthersSpecify').prop('required', true);
+            } else {
+                $('#devicesOthersSpecify').prop('required', false);
+                $('#devicesOthersSpecify').val('');
+            }
+        });
+
+        // Custom validation methods
+        $.validator.addMethod("wordLimit", function(value, element, param) {
+            var wordCount = countWords(value);
+            return this.optional(element) || wordCount <= param;
+        }, "Please limit your answer to {0} words.");
+
+        $.validator.addMethod("wordRange", function(value, element, param) {
+            var wordCount = countWords(value);
+            return this.optional(element) || (wordCount >= param[0] && wordCount <= param[1]);
+        }, "Please write between {0} and {1} words.");
+
+        $.validator.addMethod("minCheckbox", function(value, element, param) {
+            var checkboxes = $(element).closest('fieldset').find('input[type="checkbox"]:checked');
+            return checkboxes.length >= param;
+        }, "Please select at least {0} option(s).");
+
+        // Form validation rules
+        $("#studentSurveyForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 100
+                },
+                studentId: {
+                    required: true,
+                    maxlength: 100
+                },
+                age: {
+                    required: true,
+                    min: 18,
+                    max: 35,
+                    digits: true
+                },
+                levelOfStudy: {
+                    required: true
+                },
+                academicYearSemester: {
+                    required: true
+                },
+                location: {
+                    required: true
+                },
+                "devices[]": {
+                    minCheckbox: 1
+                },
+                internetAccess: {
+                    required: true
+                },
+                hoursOnline: {
+                    required: true
+                },
+                familiarWithAI: {
+                    required: true
+                },
+                useAITools: {
+                    required: true
+                },
+                aiUsageFrequency: {
+                    required: true
+                },
+                learnedAboutAI: {
+                    required: true,
+                    minlength: 10
+                },
+                coreProblemSummary: {
+                    required: true,
+                    minlength: 50,
+                    wordLimit: 120
+                },
+                peripheralEducation: {
+                    required: true,
+                    minlength: 50
+                },
+                implicitAssumptions: {
+                    required: true,
+                    minlength: 100
+                },
+                argumentAnalysis: {
+                    required: true,
+                    minlength: 150
+                },
+                evidenceVsOpinion: {
+                    required: true,
+                    minlength: 100
+                },
+                tableInferences: {
+                    required: true,
+                    minlength: 100
+                },
+                researchDesign: {
+                    required: true,
+                    minlength: 150
+                },
+                learningBenefit: {
+                    required: true,
+                    wordRange: [120, 150]
+                },
+                aiUsageReflection: {
+                    required: true,
+                    minlength: 50
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter your name",
+                    maxlength: "Name must not exceed 100 characters"
+                },
+                studentId: {
+                    required: "Please enter your student ID",
+                    maxlength: "Student ID must not exceed 100 characters"
+                },
+                age: {
+                    required: "Please enter your age",
+                    min: "Age must be at least 18",
+                    max: "Age must not exceed 35",
+                    digits: "Please enter a valid age"
+                },
+                levelOfStudy: {
+                    required: "Please select your level of study"
+                },
+                academicYearSemester: {
+                    required: "Please select your current academic year and semester"
+                },
+                location: {
+                    required: "Please select your location type"
+                },
+                "devices[]": {
+                    minCheckbox: "Please select at least one device"
+                },
+                internetAccess: {
+                    required: "Please select your internet access status"
+                },
+                hoursOnline: {
+                    required: "Please select how many hours you spend online"
+                },
+                familiarWithAI: {
+                    required: "Please select whether you are familiar with AI tools"
+                },
+                useAITools: {
+                    required: "Please select whether you use AI tools"
+                },
+                aiUsageFrequency: {
+                    required: "Please select how often you use AI tools"
+                },
+                learnedAboutAI: {
+                    required: "Please describe how you learned about AI tools",
+                    minlength: "Please provide more details (at least 10 characters)"
+                },
+                coreProblemSummary: {
+                    required: "Please provide your summary",
+                    minlength: "Please write at least 50 characters",
+                    wordLimit: "Please limit your summary to 120 words"
+                },
+                peripheralEducation: {
+                    required: "Please provide your explanation",
+                    minlength: "Please write at least 50 characters"
+                },
+                implicitAssumptions: {
+                    required: "Please identify and explain three assumptions",
+                    minlength: "Please provide more detailed explanations (at least 100 characters)"
+                },
+                argumentAnalysis: {
+                    required: "Please provide your argument analysis",
+                    minlength: "Please provide more detailed analysis (at least 150 characters)"
+                },
+                evidenceVsOpinion: {
+                    required: "Please list evidence and opinions with explanation",
+                    minlength: "Please provide more details (at least 100 characters)"
+                },
+                tableInferences: {
+                    required: "Please provide your analysis",
+                    minlength: "Please provide more detailed analysis (at least 100 characters)"
+                },
+                researchDesign: {
+                    required: "Please outline your research design",
+                    minlength: "Please provide more details (at least 150 characters)"
+                },
+                learningBenefit: {
+                    required: "Please provide your answer",
+                    wordRange: "Please write between 120 and 150 words"
+                },
+                aiUsageReflection: {
+                    required: "Please provide your reflection",
+                    minlength: "Please provide more details (at least 50 characters)"
+                }
+            },
+            errorElement: 'label',
+            errorClass: 'error',
+            errorPlacement: function(error, element) {
+                if (element.attr("type") == "radio" || element.attr("type") == "checkbox") {
+                    error.appendTo(element.closest('fieldset'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function(element, errorClass) {
+                $(element).addClass('error-border');
+            },
+            unhighlight: function(element, errorClass) {
+                $(element).removeClass('error-border');
+            },
+            submitHandler: function(form) {
+                // Additional validation before submit
+                var q15Words = countWords($('#coreProblemSummary').val());
+                var q22Words = countWords($('#learningBenefit').val());
+
+                if (q15Words > 120) {
+                    alert('Question 15: Please limit your answer to 120 words. You currently have ' + q15Words + ' words.');
+                    return false;
+                }
+
+                if (q22Words < 120 || q22Words > 150) {
+                    alert('Question 22: Please write between 120 and 150 words. You currently have ' + q22Words + ' words.');
+                    return false;
+                }
+
+                form.submit();
+            }
+        });
+
+        // Scroll to first error on validation failure
+        $("#studentSurveyForm").on("invalid-form.validate", function() {
+            var firstError = $(this).find(".error:visible:first");
+            if (firstError.length) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Survey Submitted Successfully</title>
+    <th:block th:replace="fragments::header_scripts"></th:block>
+</head>
+<body class="bg-gray-50">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <div class="bg-white shadow-lg rounded-lg p-8 text-center">
+            <!-- Success Icon -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+
+            <!-- Success Message -->
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Thank You!</h1>
+            <p class="text-lg text-gray-600 mb-6">Your survey has been submitted successfully.</p>
+
+            <!-- Success Details -->
+            <div th:if="${success}" class="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
+                <p class="text-sm text-green-800" th:text="${success}"></p>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+                <p class="text-sm text-blue-800">
+                    Your responses have been recorded and will be used for academic research purposes.
+                    Thank you for your valuable contribution to understanding AI tool usage in education.
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <a href="/survey" class="block w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+                    Submit Another Survey
+                </a>
+                <a href="/" class="block w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">
+                    Go to Homepage
+                </a>
+            </div>
+
+            <!-- Footer Note -->
+            <p class="text-xs text-gray-500 mt-6">
+                If you have any questions about this survey, please contact the survey administrator.
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
