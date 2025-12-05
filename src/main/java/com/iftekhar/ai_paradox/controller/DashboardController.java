@@ -148,4 +148,85 @@ public class DashboardController {
         return "redirect:/dashboard";
     }
 
+    /**
+     * Evaluate all pending surveys
+     * POST /dashboard/evaluate-all
+     */
+    @PostMapping("/evaluate-all")
+    public String evaluateAllPendingSurveys(RedirectAttributes redirectAttributes) {
+        log.info("Starting batch evaluation of all pending surveys");
+
+        try {
+            // Get all unevaluated survey IDs
+            List<Long> unevaluatedSurveyIds = surveyService.getUnevaluatedSurveyIds();
+
+            if (unevaluatedSurveyIds.isEmpty()) {
+                redirectAttributes.addFlashAttribute("info",
+                        "No pending surveys to evaluate. All surveys have already been evaluated.");
+                log.info("No pending surveys found for evaluation");
+                return "redirect:/dashboard";
+            }
+
+            log.info("Found {} pending surveys to evaluate", unevaluatedSurveyIds.size());
+
+            int successCount = 0;
+            int failureCount = 0;
+            StringBuilder errorMessages = new StringBuilder();
+
+            // Evaluate each survey
+            for (Long surveyId : unevaluatedSurveyIds) {
+                try {
+                    log.info("Evaluating survey ID: {}", surveyId);
+
+                    BatchEvaluationRequest request = new BatchEvaluationRequest();
+                    request.setSurveyId(surveyId);
+
+                    BatchEvaluationResult result = scoringService.evaluateSurvey(request);
+
+                    if (result.isSuccess()) {
+                        successCount++;
+                        log.info("Successfully evaluated survey: {}", surveyId);
+                    } else {
+                        failureCount++;
+                        errorMessages.append("Survey ").append(surveyId)
+                                .append(": ").append(result.getErrorMessage()).append("; ");
+                        log.error("Failed to evaluate survey: {}, error: {}",
+                                surveyId, result.getErrorMessage());
+                    }
+
+                } catch (Exception e) {
+                    failureCount++;
+                    errorMessages.append("Survey ").append(surveyId)
+                            .append(": ").append(e.getMessage()).append("; ");
+                    log.error("Exception while evaluating survey: {}", surveyId, e);
+                }
+            }
+
+            // Prepare success/error message
+            if (failureCount == 0) {
+                redirectAttributes.addFlashAttribute("success",
+                        String.format("Successfully evaluated all %d pending surveys!", successCount));
+                log.info("Batch evaluation completed successfully: {} surveys", successCount);
+            } else if (successCount > 0) {
+                redirectAttributes.addFlashAttribute("warning",
+                        String.format("Evaluated %d surveys successfully, but %d failed. Errors: %s",
+                                successCount, failureCount, errorMessages.toString()));
+                log.warn("Batch evaluation completed with failures: {} success, {} failed",
+                        successCount, failureCount);
+            } else {
+                redirectAttributes.addFlashAttribute("error",
+                        String.format("Failed to evaluate all %d surveys. Errors: %s",
+                                failureCount, errorMessages.toString()));
+                log.error("Batch evaluation failed completely: {} surveys", failureCount);
+            }
+
+        } catch (Exception e) {
+            log.error("Error during batch evaluation", e);
+            redirectAttributes.addFlashAttribute("error",
+                    "An error occurred during batch evaluation: " + e.getMessage());
+        }
+
+        return "redirect:/dashboard";
+    }
+
 }

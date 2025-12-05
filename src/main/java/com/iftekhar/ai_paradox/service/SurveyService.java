@@ -361,4 +361,25 @@ public class SurveyService {
 
         return implication;
     }
+
+    /**
+     * Get list of survey IDs that haven't been evaluated yet
+     */
+    @Transactional(readOnly = true)
+    public List<Long> getUnevaluatedSurveyIds() {
+        log.info("Fetching unevaluated survey IDs");
+
+        List<Long> allSurveyIds = surveyFormRepository.findAll()
+                .stream()
+                .map(SurveyForm::getId)
+                .collect(Collectors.toList());
+
+        List<Long> unevaluatedIds = allSurveyIds.stream()
+                .filter(surveyId -> !ctEvaluationRepository.isSurveyEvaluated(surveyId))
+                .collect(Collectors.toList());
+
+        log.info("Found {} unevaluated surveys out of {} total surveys",
+                unevaluatedIds.size(), allSurveyIds.size());
+        return unevaluatedIds;
+    }
 }
