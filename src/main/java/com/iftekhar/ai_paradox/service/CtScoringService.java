@@ -8,14 +8,18 @@ import com.iftekhar.ai_paradox.model.CtQuestion;
 import com.iftekhar.ai_paradox.model.CtSkill;
 import com.iftekhar.ai_paradox.repository.CtEvaluationRepository;
 import com.iftekhar.ai_paradox.repository.CtQuestionRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CtScoringService {
     private final ChatClient chatClient;
     private final CtQuestionRepository questionRepository;
@@ -102,16 +106,29 @@ public class CtScoringService {
         this.evaluationRepository = evaluationRepository;
     }
 
+    /**
+     * Evaluate a single answer (UPDATE existing ct_evaluation record)
+     * This is rarely used now - batch evaluation is preferred
+     */
+    @Transactional
     public CtEvaluationResult evaluate(CtEvaluationRequest request) {
-        CtQuestion q = questionRepository.findById(request.getQuestionId())
-                .orElseThrow(()->new IllegalArgumentException("Unknown question ID"));
+        log.info("Evaluating survey: {}, question: {}", request.getSurveyId(), request.getQuestionId());
+
+        // FIXED: Changed from findBySurveyIdAndQuestion_Id to findBySurveyIdAndQuestionId
+        CtEvaluation existingEval = evaluationRepository
+                .findBySurveyIdAndQuestionId(request.getSurveyId(), request.getQuestionId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No answer found for survey " + request.getSurveyId() +
+                                " and question " + request.getQuestionId()
+                ));
+
+        CtQuestion q = existingEval.getQuestion();
 
         String skillsList = q.getSkills()
                 .stream()
                 .map(CtSkill::getCode)
                 .map(String::toLowerCase)
                 .collect(Collectors.joining(", "));
-
 
         String userPrompt = """
             questionId: %s
@@ -137,24 +154,21 @@ public class CtScoringService {
                 q.getRubric(),
                 q.getMaxScore(),
                 skillsList,
-                request.getStudentAnswer()
+                existingEval.getStudentAnswer()  // Use answer from DB
         );
-
 
         String content = chatClient
                 .prompt()
                 .system(SYSTEM_PROMPT)
                 .user(userPrompt)
-                .call().content();; // JSON string
+                .call().content();
 
         CtEvaluationResult eval;
 
         try {
-            // Map snake_case -> camelCase automatically via @JsonProperty if needed
             eval = objectMapper.readValue(content, CtEvaluationResult.class);
-
         } catch (Exception e) {
-
+            log.error("Failed to parse AI response", e);
             eval = new CtEvaluationResult();
             eval.setQuestionId(q.getId());
             eval.setScore(0);
@@ -163,53 +177,79 @@ public class CtScoringService {
             eval.setStrength("");
             eval.setWeakness("");
         }
-        CtEvaluation entity = new CtEvaluation();
-        entity.setSurveyId(request.getSurveyId());          // link to survey_forms.id
-        entity.setQuestion(q);
-        entity.setStudentAnswer(request.getStudentAnswer());
-        entity.setScore(eval.getScore());
-        entity.setOnTopic(eval.isOnTopic());
-        entity.setReason(eval.getReason());
-        entity.setStrength(eval.getStrength());
-        entity.setWeakness(eval.getWeakness());
-        entity.setEvalModel("gpt-4o-mini");
+
+        // UPDATE existing record with evaluation results
+        existingEval.setScore(eval.getScore());
+        existingEval.setOnTopic(eval.isOnTopic());
+        existingEval.setReason(eval.getReason());
+        existingEval.setStrength(eval.getStrength());
+        existingEval.setWeakness(eval.getWeakness());
+        existingEval.setEvalModel("gpt-4o-mini");
 
         // skills map → JSON string
         try {
             if (eval.getSkills() != null) {
                 String skillsJson = objectMapper.writeValueAsString(eval.getSkills());
-                entity.setSkillsJson(skillsJson);
+                existingEval.setSkillsJson(skillsJson);
             }
         } catch (Exception e) {
-            // if serialization fails, ignore skillsJson but still save row
-            entity.setSkillsJson(null);
+            log.error("Failed to serialize skills", e);
+            existingEval.setSkillsJson(null);
         }
 
-        evaluationRepository.save(entity);
+        evaluationRepository.save(existingEval);  // UPDATE, not INSERT
 
-        // 7) Return result to caller (for UI)
+        log.info("Evaluation completed for survey: {}, question: {}, score: {}",
+                request.getSurveyId(), request.getQuestionId(), eval.getScore());
+
         return eval;
     }
 
+    /**
+     * Evaluate all answers for a survey at once (PREFERRED METHOD)
+     */
+    @Transactional
     public BatchEvaluationResult evaluateSurvey(BatchEvaluationRequest request) {
+        log.info("Starting batch evaluation for survey: {}", request.getSurveyId());
+
         try {
-            // 1) Build prompt
+            // Load existing answers from ct_evaluation
+            List<CtEvaluation> existingAnswers = evaluationRepository
+                    .findBySurveyIdWithQuestion(request.getSurveyId());
+
+            if (existingAnswers.isEmpty()) {
+                log.warn("No answers found for survey: {}", request.getSurveyId());
+                return fail(request.getSurveyId(), "NO_ANSWERS",
+                        "No answers found for survey " + request.getSurveyId());
+            }
+
+            // Check if already evaluated
+            boolean alreadyEvaluated = existingAnswers.stream()
+                    .allMatch(e -> e.getScore() != null);
+
+            if (alreadyEvaluated) {
+                log.warn("Survey {} has already been evaluated", request.getSurveyId());
+                return fail(request.getSurveyId(), "ALREADY_EVALUATED",
+                        "Survey has already been evaluated. Scores exist.");
+            }
+
+            // Build prompt from existing answers
             StringBuilder sb = new StringBuilder();
             sb.append("surveyId: ").append(request.getSurveyId()).append("\n\n");
             sb.append("items:\n");
 
-            for(int i = 0; i < request.getItems().size(); i++) {
-                QuestionAnswerDto qa = request.getItems().get(i);
-                CtQuestion q = questionRepository.findById(qa.getQuestionId())
-                        .orElseThrow(() -> new IllegalArgumentException("Unknown questionId: " + qa.getQuestionId()));
-                sb.append(i + 1).append(")\n");
+            int index = 1;
+            for (CtEvaluation eval : existingAnswers) {
+                CtQuestion q = eval.getQuestion();
+                sb.append(index++).append(")\n");
                 sb.append("questionId: ").append(q.getId()).append("\n");
                 sb.append("questionText:\n").append(q.getText()).append("\n\n");
                 sb.append("rubric:\n").append(q.getRubric()).append("\n\n");
                 sb.append("maxScore: ").append(q.getMaxScore()).append("\n\n");
-                sb.append("studentAnswer:\n").append(qa.getStudentAnswer()).append("\n\n");
-
+                sb.append("studentAnswer:\n").append(eval.getStudentAnswer()).append("\n\n");
             }
+
+            log.debug("Sending evaluation request to AI model");
 
             String content = chatClient
                     .prompt()
@@ -218,44 +258,48 @@ public class CtScoringService {
                     .call()
                     .content();
 
+            log.debug("Received response from AI model");
+
             BatchEvaluationResult parsed = objectMapper.readValue(content, BatchEvaluationResult.class);
 
-            // 3) Persist each evaluation row
-            for (CtEvaluationResult eval : parsed.getEvaluations()) {
-                CtQuestion q = questionRepository.findById(eval.getQuestionId())
-                        .orElseThrow(() -> new IllegalArgumentException("Unknown questionId in eval: " + eval.getQuestionId()));
+            // Update each evaluation record
+            for (CtEvaluationResult evalResult : parsed.getEvaluations()) {
+                CtEvaluation existingEval = existingAnswers.stream()
+                        .filter(e -> e.getQuestion().getId().equals(evalResult.getQuestionId()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Question not found in answers: " + evalResult.getQuestionId()
+                        ));
 
-                CtEvaluation entity = new CtEvaluation();
-                entity.setSurveyId(request.getSurveyId());
-                entity.setQuestion(q);
+                existingEval.setScore(evalResult.getScore());
+                existingEval.setOnTopic(evalResult.isOnTopic());
+                existingEval.setReason(evalResult.getReason());
+                existingEval.setStrength(evalResult.getStrength());
+                existingEval.setWeakness(evalResult.getWeakness());
+                existingEval.setEvalModel("gpt-4o-mini");
 
-                String answer = request.getItems().stream()
-                        .filter(qa -> qa.getQuestionId().equals(eval.getQuestionId()))
-                        .map(QuestionAnswerDto::getStudentAnswer)
-                        .findFirst().orElse("");
-
-                entity.setStudentAnswer(answer);
-                entity.setScore(eval.getScore());
-                entity.setOnTopic(eval.isOnTopic());
-                entity.setReason(eval.getReason());
-                entity.setStrength(eval.getStrength());
-                entity.setWeakness(eval.getWeakness());
-                entity.setEvalModel("gpt-4o-mini");
-
-                if (eval.getSkills() != null) {
-                    entity.setSkillsJson(objectMapper.writeValueAsString(eval.getSkills()));
+                if (evalResult.getSkills() != null) {
+                    existingEval.setSkillsJson(objectMapper.writeValueAsString(evalResult.getSkills()));
                 }
 
-                evaluationRepository.save(entity);
+                evaluationRepository.save(existingEval);
+
+                log.debug("Updated evaluation for question: {}, score: {}",
+                        evalResult.getQuestionId(), evalResult.getScore());
             }
-            return parsed; // success
+
+            log.info("Batch evaluation completed successfully for survey: {}", request.getSurveyId());
+
+            return parsed;
 
         } catch (IllegalArgumentException e) {
+            log.error("Invalid question ID in evaluation", e);
             return fail(request.getSurveyId(), "INVALID_QUESTION_ID", e.getMessage());
-        }catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
+            log.error("JSON parsing error", e);
             return fail(request.getSurveyId(), "JSON_PARSE_ERROR", e.getMessage());
-
         } catch (Exception e) {
+            log.error("Unexpected error during evaluation", e);
             return fail(request.getSurveyId(), "INTERNAL_ERROR", e.getMessage());
         }
     }

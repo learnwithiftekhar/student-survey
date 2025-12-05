@@ -29,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authenticationProvider) throws Exception {
         http
-                .csrf(csrf->csrf.disable())
+//                .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(
                         req->req
 //                                .requestMatchers("/", "/css/**", "/js/**", "/images/**").permitAll()

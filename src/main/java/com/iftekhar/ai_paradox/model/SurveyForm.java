@@ -8,7 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -97,39 +99,6 @@ public class SurveyForm {
     @Column(name = "learned_about_ai", nullable = false, columnDefinition = "TEXT")
     private String learnedAboutAI;
 
-    @Column(name = "core_problem_summary", nullable = false, columnDefinition = "TEXT")
-    private String coreProblemSummary;
-
-    @Column(name = "peripheral_education", nullable = false, columnDefinition = "TEXT")
-    private String peripheralEducation;
-
-    // ===== Section B: Analysis of Assumptions & Arguments =====
-
-    @Column(name = "implicit_assumptions", nullable = false, columnDefinition = "TEXT")
-    private String implicitAssumptions;
-
-    @Column(name = "argument_analysis", nullable = false, columnDefinition = "TEXT")
-    private String argumentAnalysis;
-
-    @Column(name = "evidence_vs_opinion", nullable = false, columnDefinition = "TEXT")
-    private String evidenceVsOpinion;
-
-    // ===== Section C: Inference, Causal Reasoning & Alternative Explanations =====
-
-    @Column(name = "table_inferences", nullable = false, columnDefinition = "TEXT")
-    private String tableInferences;
-
-    @Column(name = "research_design", nullable = false, columnDefinition = "TEXT")
-    private String researchDesign;
-
-    // ===== Section D: Self-Regulation & Meta-Reflection =====
-
-    @Column(name = "learning_benefit", nullable = false, columnDefinition = "TEXT")
-    private String learningBenefit;
-
-    @Column(name = "ai_usage_reflection", nullable = false, columnDefinition = "TEXT")
-    private String aiUsageReflection;
-
     // ===== Audit Fields =====
 
     @CreationTimestamp
@@ -145,8 +114,6 @@ public class SurveyForm {
 
     @Column(name = "is_completed", nullable = false)
     private Boolean isCompleted = false;
-
-    // ===== Helper Methods =====
 
     /**
      * Add a device to the devices set
