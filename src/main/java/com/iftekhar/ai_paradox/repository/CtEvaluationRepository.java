@@ -34,4 +34,10 @@ public interface CtEvaluationRepository extends JpaRepository<CtEvaluation, Long
     @Modifying
     @Query("DELETE FROM CtEvaluation e WHERE e.surveyId = :surveyId")
     void deleteBySurveyId(@Param("surveyId") Long surveyId);
+
+    /**
+     * Count distinct surveys that have been evaluated (at least one score is not null)
+     */
+    @Query("SELECT COUNT(DISTINCT e.surveyId) FROM CtEvaluation e WHERE e.score IS NOT NULL")
+    long countEvaluatedSurveys();
 }

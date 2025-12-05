@@ -231,4 +231,12 @@ public class SurveyService {
 
         return dto;
     }
+
+    /**
+     * Get count of evaluated surveys
+     */
+    @Transactional(readOnly = true)
+    public long getEvaluatedSurveysCount() {
+        return ctEvaluationRepository.countEvaluatedSurveys();
+    }
 }

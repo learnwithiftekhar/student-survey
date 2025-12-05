@@ -42,10 +42,14 @@ public class DashboardController {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<SurveyFormDTO> surveyPage = surveyService.getAllSurveys(pageable);
 
+        long evaluatedCount = surveyService.getEvaluatedSurveysCount();
+
+
         model.addAttribute("surveys", surveyPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", surveyPage.getTotalPages());
         model.addAttribute("totalItems", surveyPage.getTotalElements());
+        model.addAttribute("evaluatedCount", evaluatedCount);  // ✅ Add this
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         return "dashboard";
