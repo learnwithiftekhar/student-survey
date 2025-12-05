@@ -3,6 +3,7 @@ package com.iftekhar.ai_paradox.model;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ct_evaluation")

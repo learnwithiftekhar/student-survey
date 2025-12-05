@@ -1,6 +1,9 @@
 package com.iftekhar.ai_paradox.controller;
 
+import com.iftekhar.ai_paradox.dto.BatchEvaluationRequest;
+import com.iftekhar.ai_paradox.dto.BatchEvaluationResult;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
+import com.iftekhar.ai_paradox.service.CtScoringService;
 import com.iftekhar.ai_paradox.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -22,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class DashboardController {
     private final SurveyService surveyService;
+    private final CtScoringService scoringService;  // ✅ Add this
+
 
     @GetMapping
     public String dashboard(
@@ -68,4 +70,63 @@ public class DashboardController {
             return "redirect:/survey/list";
         }
     }
+
+    /**
+     * NEW: Evaluate answers for a survey
+     * POST /dashboard/evaluate/{id}
+     */
+    @PostMapping("/evaluate/{id}")
+    public String evaluateSurvey(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        log.info("Evaluating survey with ID: {}", id);
+
+        try {
+            // Create evaluation request
+            BatchEvaluationRequest request = new BatchEvaluationRequest();
+            request.setSurveyId(id);
+
+            // Call scoring service
+            BatchEvaluationResult result = scoringService.evaluateSurvey(request);
+
+            if (result.isSuccess()) {
+                redirectAttributes.addFlashAttribute("success",
+                        "Survey evaluated successfully! " + result.getEvaluations().size() + " answers were scored.");
+                log.info("Successfully evaluated survey: {}", id);
+            } else {
+                redirectAttributes.addFlashAttribute("error",
+                        "Evaluation failed: " + result.getErrorMessage());
+                log.error("Failed to evaluate survey: {}, error: {}", id, result.getErrorMessage());
+            }
+
+        } catch (Exception e) {
+            log.error("Error evaluating survey with ID: {}", id, e);
+            redirectAttributes.addFlashAttribute("error",
+                    "An error occurred while evaluating the survey: " + e.getMessage());
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    // TODO: REMOVE THIS METHOD
+    /**
+     * Delete a survey
+     * POST /dashboard/delete/{id}
+     */
+    @PostMapping("/delete/{id}")
+    public String deleteSurvey(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        log.info("Deleting survey with ID: {}", id);
+
+        try {
+            surveyService.deleteSurvey(id);
+            redirectAttributes.addFlashAttribute("success",
+                    "Survey deleted successfully!");
+            log.info("Successfully deleted survey: {}", id);
+        } catch (Exception e) {
+            log.error("Error deleting survey with ID: {}", id, e);
+            redirectAttributes.addFlashAttribute("error",
+                    "An error occurred while deleting the survey: " + e.getMessage());
+        }
+
+        return "redirect:/dashboard";
+    }
+
 }
