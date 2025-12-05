@@ -142,12 +142,13 @@ public class SurveyService {
                     // Check evaluation status for each survey
                     boolean isEvaluated = ctEvaluationRepository.isSurveyEvaluated(survey.getId());  // ✅ Check status
 
-                    return SurveyFormDTO.builder()
+                    SurveyFormDTO dto = SurveyFormDTO.builder()
                             .id(survey.getId())
                             .name(survey.getName())
                             .studentId(survey.getStudentId())
                             .age(survey.getAge())
                             .levelOfStudy(survey.getLevelOfStudy())
+                            .academicYearSemester(survey.getAcademicYearSemester())  // ✅ Add this
                             .location(survey.getLocation())
                             .devices(survey.getDevices())
                             .studyTools(survey.getStudyTools())
@@ -159,12 +160,27 @@ public class SurveyService {
                                     !survey.getAiUsageFrequency().equalsIgnoreCase("Never") ? "Yes" : "No")
                             .aiUsageFrequency(survey.getAiUsageFrequency())
                             .learnedAboutAI(survey.getLearnedAboutAI())
-                            .evaluated(isEvaluated)  // ✅ Set evaluation status
+                            .evaluated(isEvaluated)
                             .createdAt(survey.getCreatedAt())
                             .updatedAt(survey.getUpdatedAt())
                             .submittedByIp(survey.getSubmittedByIp())
                             .isCompleted(survey.getIsCompleted())
                             .build();
+
+                    // ✅ Add overall score if evaluated
+                    if (isEvaluated) {
+                        Map<String, Object> overallScore = getOverallEvaluationScore(survey.getId());
+                        dto.setOverallScore((Integer) overallScore.get("totalScore"));
+                        dto.setMaxPossibleScore((Integer) overallScore.get("maxPossibleScore"));
+                        dto.setScorePercentage((Double) overallScore.get("percentage"));
+
+                        @SuppressWarnings("unchecked")
+                        Map<String, String> implication = (Map<String, String>) overallScore.get("implication");
+                        dto.setCtLevel(implication.get("label"));
+                        dto.setCtLevelColor(implication.get("color"));
+                    }
+
+                    return dto;
                 });
     }
 

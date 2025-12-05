@@ -136,6 +136,12 @@ public class SurveyFormDTO implements Serializable {
 
     // ✅ NEW: Evaluation status (calculated, not stored in DB)
     private Boolean evaluated;
+    // ✅ NEW: Overall score fields (calculated, not stored in DB)
+    private Integer overallScore;
+    private Integer maxPossibleScore;
+    private Double scorePercentage;
+    private String ctLevel;           // e.g., "Advanced / High CT"
+    private String ctLevelColor;
 
     // ===== Custom Validation Methods =====
 
