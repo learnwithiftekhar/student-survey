@@ -1,5 +1,8 @@
 package com.iftekhar.ai_paradox.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iftekhar.ai_paradox.dto.EvaluationDisplayDto;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
 import com.iftekhar.ai_paradox.model.CtEvaluation;
 import com.iftekhar.ai_paradox.model.CtQuestion;
@@ -16,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -238,5 +244,105 @@ public class SurveyService {
     @Transactional(readOnly = true)
     public long getEvaluatedSurveysCount() {
         return ctEvaluationRepository.countEvaluatedSurveys();
+    }
+
+    /**
+     * Get evaluation details for a survey
+     */
+    @Transactional(readOnly = true)
+    public List<EvaluationDisplayDto> getEvaluationsBySurveyId(Long surveyId) {
+        List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(surveyId);
+
+        return evaluations.stream()
+                .map(this::mapToEvaluationDisplayDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Calculate overall evaluation score and implication
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Object> getOverallEvaluationScore(Long surveyId) {
+        List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(surveyId);
+
+        int totalScore = 0;
+        int maxPossibleScore = 0;
+        int evaluatedCount = 0;
+
+        for (CtEvaluation eval : evaluations) {
+            if (eval.getScore() != null) {
+                totalScore += eval.getScore();
+                evaluatedCount++;
+            }
+            maxPossibleScore += eval.getQuestion().getMaxScore();
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalScore", totalScore);
+        result.put("maxPossibleScore", maxPossibleScore);
+        result.put("evaluatedCount", evaluatedCount);
+        result.put("totalQuestions", evaluations.size());
+        result.put("percentage", maxPossibleScore > 0 ? (totalScore * 100.0 / maxPossibleScore) : 0);
+        result.put("implication", getScoreImplication(totalScore));
+
+        return result;
+    }
+
+    /**
+     * Map CtEvaluation to EvaluationDisplayDto
+     */
+    private EvaluationDisplayDto mapToEvaluationDisplayDto(CtEvaluation evaluation) {
+        CtQuestion question = evaluation.getQuestion();
+
+        Map<String, Integer> skills = null;
+        if (evaluation.getSkillsJson() != null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                skills = mapper.readValue(evaluation.getSkillsJson(),
+                        new TypeReference<Map<String, Integer>>() {});
+            } catch (Exception e) {
+                log.warn("Failed to parse skills JSON for evaluation ID: {}", evaluation.getId());
+            }
+        }
+
+        return EvaluationDisplayDto.builder()
+                .questionId(question.getId())
+                .questionNumber(question.getNumber())
+                .questionTitle(question.getTitle())
+                .maxScore(question.getMaxScore())
+                .score(evaluation.getScore())
+                .onTopic(evaluation.getOnTopic())
+                .reason(evaluation.getReason())
+                .strength(evaluation.getStrength())
+                .weakness(evaluation.getWeakness())
+                .skills(skills)
+                .studentAnswer(evaluation.getStudentAnswer())
+                .build();
+    }
+    /**
+     * Get score implication based on total score (out of 60)
+     */
+    private Map<String, String> getScoreImplication(int totalScore) {
+        Map<String, String> implication = new HashMap<>();
+
+        if (totalScore >= 48) {
+            implication.put("label", "Advanced / High CT");
+            implication.put("color", "green");
+            implication.put("description", "Strong ability to interpret, analyse, evaluate, infer, design studies, and reflect on own learning and AI use.");
+        } else if (totalScore >= 36) {
+            implication.put("label", "Competent / Developing CT");
+            implication.put("color", "blue");
+            implication.put("description", "Demonstrates consistent, though uneven, critical thinking. Can analyse and infer but may miss complexity.");
+        } else if (totalScore >= 24) {
+            implication.put("label", "Emerging / Basic CT");
+            implication.put("color", "yellow");
+            implication.put("description", "Shows basic understanding of case and some ability to identify assumptions or draw inferences.");
+        } else {
+            implication.put("label", "At Risk / Limited CT");
+            implication.put("color", "red");
+            implication.put("description", "Struggles to interpret the problem, recognise assumptions, or construct coherent arguments.");
+        }
+
+        return implication;
     }
 }

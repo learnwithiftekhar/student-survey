@@ -24,10 +24,221 @@
                     </div>
                     <div class="flex gap-3">
 
-                        <a href="dashboard"
+                        <a th:href="@{/dashboard}"
                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">
                             Back to List
                         </a>
+                    </div>
+                </div>
+
+                <!-- ✅ EVALUATION SCORES SECTION - NOW AT THE TOP -->
+                <div th:if="${survey.evaluated and evaluations != null}" class="mb-8">
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                            <h2 class="text-2xl font-bold text-white flex items-center">
+                                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Critical Thinking Assessment Results
+                            </h2>
+                            <p class="text-indigo-100 text-sm mt-1">AI-powered evaluation completed</p>
+                        </div>
+
+                        <div class="p-6">
+                            <!-- Overall Score Card -->
+                            <div class="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6 border border-indigo-200">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Overall Score</h3>
+                                        <div class="flex items-baseline gap-3 mb-3">
+                                    <span class="text-5xl font-bold text-indigo-600"
+                                          th:text="${overallScore.totalScore}">0</span>
+                                            <span class="text-2xl text-gray-500">/</span>
+                                            <span class="text-3xl font-semibold text-gray-700"
+                                                  th:text="${overallScore.maxPossibleScore}">60</span>
+                                            <span class="ml-3 text-xl font-medium text-gray-600">
+                                        (<span th:text="${#numbers.formatDecimal(overallScore.percentage, 1, 1)}">0</span>%)
+                                    </span>
+                                        </div>
+
+                                        <!-- Implication Badge -->
+                                        <div class="mb-3">
+                                    <span th:if="${overallScore.implication.color == 'green'}"
+                                          class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span th:text="${overallScore.implication.label}">Advanced / High CT</span>
+                                    </span>
+
+                                            <span th:if="${overallScore.implication.color == 'blue'}"
+                                                  class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span th:text="${overallScore.implication.label}">Competent / Developing CT</span>
+                                    </span>
+
+                                            <span th:if="${overallScore.implication.color == 'yellow'}"
+                                                  class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span th:text="${overallScore.implication.label}">Emerging / Basic CT</span>
+                                    </span>
+
+                                            <span th:if="${overallScore.implication.color == 'red'}"
+                                                  class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span th:text="${overallScore.implication.label}">At Risk / Limited CT</span>
+                                    </span>
+                                        </div>
+
+                                        <p class="text-sm text-gray-700 max-w-2xl"
+                                           th:text="${overallScore.implication.description}">
+                                            Description of the implication
+                                        </p>
+                                    </div>
+
+                                    <!-- Progress Circle -->
+                                    <div class="flex flex-col items-center ml-6">
+                                        <div class="relative w-32 h-32">
+                                            <svg class="transform -rotate-90 w-32 h-32">
+                                                <circle cx="64" cy="64" r="56" stroke="currentColor"
+                                                        stroke-width="8" fill="transparent"
+                                                        class="text-gray-200"/>
+                                                <circle cx="64" cy="64" r="56" stroke="currentColor"
+                                                        stroke-width="8" fill="transparent"
+                                                        th:attr="stroke-dasharray='351.68', stroke-dashoffset=${351.68 - (351.68 * overallScore.percentage / 100)}"
+                                                        th:classappend="${overallScore.implication.color == 'green'} ? 'text-green-500' :
+                                                               (${overallScore.implication.color == 'blue'} ? 'text-blue-500' :
+                                                               (${overallScore.implication.color == 'yellow'} ? 'text-yellow-500' : 'text-red-500'))"
+                                                        class="transition-all duration-1000 ease-out"/>
+                                            </svg>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                        <span class="text-2xl font-bold text-gray-700"
+                                              th:text="${#numbers.formatDecimal(overallScore.percentage, 1, 0)} + '%'">0%</span>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2 text-center">Overall<br/>Performance</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Individual Question Scores -->
+                            <div class="space-y-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Question-by-Question Analysis</h3>
+
+                                <div th:each="eval : ${evaluations}" class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                                    <!-- Question Header -->
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-2">
+                                        <span class="text-lg font-bold text-indigo-600"
+                                              th:text="${eval.questionNumber}">A1</span>
+                                                <h4 class="text-base font-semibold text-gray-900"
+                                                    th:text="${eval.questionTitle}">Question Title</h4>
+                                            </div>
+                                            <p class="text-sm text-gray-600" th:text="${eval.questionId}">CTA-AI-01.A1</p>
+                                        </div>
+
+                                        <!-- Score Badge -->
+                                        <div class="flex items-center gap-2">
+                                            <div class="text-right">
+                                                <div class="flex items-baseline gap-1">
+                                            <span class="text-3xl font-bold"
+                                                  th:classappend="${eval.score != null and eval.score >= eval.maxScore * 0.8} ? 'text-green-600' :
+                                                                 (${eval.score != null and eval.score >= eval.maxScore * 0.6} ? 'text-blue-600' :
+                                                                 (${eval.score != null and eval.score >= eval.maxScore * 0.4} ? 'text-yellow-600' : 'text-red-600'))"
+                                                  th:text="${eval.score != null} ? ${eval.score} : '-'">0</span>
+                                                    <span class="text-lg text-gray-500">/</span>
+                                                    <span class="text-xl font-semibold text-gray-700"
+                                                          th:text="${eval.maxScore}">5</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">
+                                            <span th:if="${eval.score != null}"
+                                                  th:text="${#numbers.formatDecimal(eval.score * 100.0 / eval.maxScore, 1, 0)} + '%'">80%</span>
+                                                    <span th:if="${eval.score == null}">Not Scored</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- On Topic Badge -->
+                                    <div class="mb-4" th:if="${eval.onTopic != null}">
+                                <span th:if="${eval.onTopic}"
+                                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    On Topic
+                                </span>
+                                        <span th:if="${!eval.onTopic}"
+                                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Off Topic
+                                </span>
+                                    </div>
+
+                                    <!-- Evaluation Details -->
+                                    <div class="space-y-4">
+                                        <!-- Reason -->
+                                        <div th:if="${eval.reason != null and !eval.reason.isEmpty()}">
+                                            <p class="text-sm font-semibold text-gray-700 mb-1">Evaluation Reason:</p>
+                                            <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded" th:text="${eval.reason}">
+                                                Reason for the score
+                                            </p>
+                                        </div>
+
+                                        <!-- Strength & Weakness -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div th:if="${eval.strength != null and !eval.strength.isEmpty()}">
+                                                <p class="text-sm font-semibold text-green-700 mb-1 flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                    Strength:
+                                                </p>
+                                                <p class="text-sm text-gray-600 bg-green-50 p-3 rounded border border-green-200"
+                                                   th:text="${eval.strength}">
+                                                    Strength of the answer
+                                                </p>
+                                            </div>
+
+                                            <div th:if="${eval.weakness != null and !eval.weakness.isEmpty()}">
+                                                <p class="text-sm font-semibold text-orange-700 mb-1 flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                    Area for Improvement:
+                                                </p>
+                                                <p class="text-sm text-gray-600 bg-orange-50 p-3 rounded border border-orange-200"
+                                                   th:text="${eval.weakness}">
+                                                    Weakness or improvement area
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Skills Breakdown -->
+                                        <div th:if="${eval.skills != null and !eval.skills.isEmpty()}">
+                                            <p class="text-sm font-semibold text-gray-700 mb-2">CT Skills Assessment:</p>
+                                            <div class="flex flex-wrap gap-2">
+                                                <div th:each="skill : ${eval.skills}"
+                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                                    <span th:text="${skill.key}" class="capitalize">interpretation</span>
+                                                    <span class="ml-1 font-bold" th:text="': ' + ${skill.value} + '/10'">: 8/10</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

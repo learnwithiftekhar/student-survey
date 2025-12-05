@@ -2,6 +2,7 @@ package com.iftekhar.ai_paradox.controller;
 
 import com.iftekhar.ai_paradox.dto.BatchEvaluationRequest;
 import com.iftekhar.ai_paradox.dto.BatchEvaluationResult;
+import com.iftekhar.ai_paradox.dto.EvaluationDisplayDto;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
 import com.iftekhar.ai_paradox.service.CtScoringService;
 import com.iftekhar.ai_paradox.service.SurveyService;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -66,6 +70,17 @@ public class DashboardController {
         try {
             SurveyFormDTO survey = surveyService.getSurveyById(id);
             model.addAttribute("survey", survey);
+            // ✅ Add evaluation data if survey is evaluated
+            if (survey.getEvaluated()) {
+                List<EvaluationDisplayDto> evaluations = surveyService.getEvaluationsBySurveyId(id);
+                Map<String, Object> overallScore = surveyService.getOverallEvaluationScore(id);
+
+                model.addAttribute("evaluations", evaluations);
+                model.addAttribute("overallScore", overallScore);
+
+                log.info("Loaded evaluation data for survey: {}, total score: {}/{}",
+                        id, overallScore.get("totalScore"), overallScore.get("maxPossibleScore"));
+            }
             return "survey-view";
 
         } catch (Exception e) {
