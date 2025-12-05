@@ -24,11 +24,11 @@ public class CtQuestion {
     private String title;
 
     @Lob
-    @Column(name = "text", nullable = false)
+    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;             // question text
 
     @Lob
-    @Column(name = "rubric", nullable = false)
+    @Column(name = "rubric", nullable = false, columnDefinition = "TEXT")
     private String rubric;           // marking guideline
 
     @Column(name = "max_score", nullable = false)

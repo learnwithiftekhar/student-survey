@@ -1,10 +1,9 @@
 package com.iftekhar.ai_paradox.controller;
 
-import com.iftekhar.ai_paradox.dto.CtEvaluationRequest;
-import com.iftekhar.ai_paradox.dto.CtEvaluationResult;
-import com.iftekhar.ai_paradox.dto.QuestionDto;
+import com.iftekhar.ai_paradox.dto.*;
 import com.iftekhar.ai_paradox.service.CtScoringService;
 import com.iftekhar.ai_paradox.service.QuestionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,5 +32,15 @@ public class CtEvaluationController {
     @PostMapping("/evaluate")
     public CtEvaluationResult evaluate(@RequestBody CtEvaluationRequest request) {
         return scoringService.evaluate(request);
+    }
+
+    @PostMapping("/evaluate-survey")
+    public ResponseEntity<BatchEvaluationResult> evaluateSurvey(
+            @RequestBody BatchEvaluationRequest request) {
+        BatchEvaluationResult result = scoringService.evaluateSurvey(request);
+        if (!result.isSuccess()) {
+            return ResponseEntity.status(500).body(result); // return failure with error JSON
+        }
+        return ResponseEntity.ok(result);
     }
 }

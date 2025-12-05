@@ -2,14 +2,14 @@ CREATE TABLE ct_evaluation (
                                id              BIGINT AUTO_INCREMENT PRIMARY KEY,
                                survey_id       BIGINT      NOT NULL,
                                question_id     VARCHAR(50) NOT NULL,
-                               student_answer  TEXT        NOT NULL,
+                               student_answer  LONGTEXT        NOT NULL,
 
                                score           INT         NULL,
                                on_topic        TINYINT(1)  NULL,
                                skills_json     JSON        NULL,
-                               reason          TEXT        NULL,
-                               strength        TEXT        NULL,
-                               weakness        TEXT        NULL,
+                               reason          LONGTEXT        NULL,
+                               strength        LONGTEXT        NULL,
+                               weakness        LONGTEXT        NULL,
                                eval_model      VARCHAR(100) NULL,
                                created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

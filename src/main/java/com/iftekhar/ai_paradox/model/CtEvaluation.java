@@ -22,7 +22,7 @@ public class CtEvaluation {
 
     // what they wrote
     @Lob
-    @Column(name = "student_answer", nullable = false)
+    @Column(name = "student_answer", nullable = false, columnDefinition = "TEXT")
     private String studentAnswer;
 
     // model evaluation
@@ -37,15 +37,15 @@ public class CtEvaluation {
     private String skillsJson;   // e.g. {"interpretation":4,"analysis":3}
 
     @Lob
-    @Column(name = "reason")
+    @Column(name = "reason", columnDefinition = "TEXT")
     private String reason;
 
     @Lob
-    @Column(name = "strength")
+    @Column(name = "strength", columnDefinition = "TEXT")
     private String strength;
 
     @Lob
-    @Column(name = "weakness")
+    @Column(name = "weakness", columnDefinition = "TEXT")
     private String weakness;
 
     @Column(name = "eval_model", length = 100)

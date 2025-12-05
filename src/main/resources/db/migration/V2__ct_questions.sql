@@ -27,8 +27,8 @@ CREATE TABLE ct_question (
                              section      CHAR(1)      NOT NULL,              -- A, B, C, D
                              number       VARCHAR(10)  NOT NULL,              -- A1, B2, etc.
                              title        VARCHAR(255) NULL,
-                             text         TEXT         NOT NULL,
-                             rubric       TEXT         NOT NULL,
+                             text         LONGTEXT         NOT NULL,
+                             rubric       LONGTEXT         NOT NULL,
                              max_score    INT          NOT NULL,
                              active       TINYINT(1)   NOT NULL DEFAULT 1,
                              created_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
