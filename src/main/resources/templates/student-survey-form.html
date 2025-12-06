@@ -814,7 +814,21 @@
 
                             <!-- Question 15 -->
                             <div class="mb-6">
-                                <label for="coreProblemSummary" class="block text-sm font-medium text-gray-900">15. In your own words, summarise the core problem presented in the case in no more than 120 words. Your summary should clearly show: a) The role of AI in students' academic performance, and b) The concern about students' critical thinking. <span class="text-red-600">*</span></label>
+                                <label for="coreProblemSummary" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    15. In your own words, summarise the core problem presented in the case in no more than 120 words.
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 space-y-2">
+                                        <p class="text-sm font-medium text-indigo-900 mb-2">Your summary should clearly show:</p>
+                                        <div class="flex items-start space-x-2">
+                                            <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">a</span>
+                                            <p class="text-sm text-gray-700 pt-0.5">The role of AI in students' academic performance, and</p>
+                                        </div>
+                                        <div class="flex items-start space-x-2">
+                                            <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">b</span>
+                                            <p class="text-sm text-gray-700 pt-0.5">The concern about students' critical thinking.</p>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="coreProblemSummary" name="coreProblemSummary" th:field="*{coreProblemSummary}" rows="5"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -824,7 +838,13 @@
 
                             <!-- Question 16 -->
                             <div class="mb-6">
-                                <label for="peripheralEducation" class="block text-sm font-medium text-gray-900">16. Explain what is meant by "peripheral higher education" in this context. How might "peripherality" shape both the adoption and the impact of AI tools in the sociology classroom? <span class="text-red-600">*</span></label>
+                                <label for="peripheralEducation" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    16. Explain what is meant by <span class="italic text-indigo-700">"peripheral higher education"</span> in this context.
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-2 pl-4">
+                                        <p class="text-sm text-gray-700">How might <span class="font-medium text-indigo-900">"peripherality"</span> shape both the adoption and the impact of AI tools in the sociology classroom?</p>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="peripheralEducation" name="peripheralEducation" th:field="*{peripheralEducation}" rows="5"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -832,12 +852,31 @@
                             </div>
                         </div>
 
+                        <!-- Section Divider -->
+                        <div class="mb-8">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div class="w-full border-t-2 border-indigo-200"></div>
+                                </div>
+                                <div class="relative flex justify-center">
+                                        <span class="bg-white px-6 py-2 text-lg font-bold text-indigo-900 shadow-sm rounded-full border-2 border-indigo-200">
+                                            Section B: Analysis of Assumptions & Arguments
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Section B: Analysis of Assumptions & Arguments -->
                         <div class="border-b border-gray-900/10 pb-12">
 
                             <!-- Question 17 -->
                             <div class="mb-6">
-                                <label for="implicitAssumptions" class="block text-sm font-medium text-gray-900">17. Identify three implicit assumptions made by university management when they interpret higher grades as evidence of "smart learning" success. For each assumption, explain why it may be problematic from a sociological perspective. (You may phrase as bullet points.) <span class="text-red-600">*</span></label>
+                                <label for="implicitAssumptions" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    17. Identify three implicit assumptions made by university management when they interpret higher grades as evidence of <span class="italic text-indigo-700">"smart learning"</span> success.
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-2 pl-4">
+                                        <p class="text-sm text-gray-700">For each assumption, explain why it may be problematic from a sociological perspective. <span class="text-gray-600 italic">(You may phrase as bullet points.)</span></p>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="implicitAssumptions" name="implicitAssumptions" th:field="*{implicitAssumptions}" rows="8"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -846,16 +885,44 @@
 
                             <!-- Question 18 -->
                             <div class="mb-6">
-                                <label for="argumentAnalysis" class="block text-sm font-medium text-gray-900">18. A colleague argues: "AI is democratising knowledge. For peripheral universities, anything that raises grades is good. Critical thinking is a luxury; our students first need high marks to compete in the job market." a) Reconstruct this argument in standard form (premises + conclusion). b) Critically analyse the strengths and weaknesses of this argument using at least two sociological concepts (e.g., meritocracy, symbolic capital, neoliberalism, digital divide, hidden curriculum). <span class="text-red-600">*</span></label>
+                                <label for="argumentAnalysis" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    18. Consider the following argument:
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 py-3 bg-gray-50 border-l-4 border-indigo-500 rounded-r-lg">
+                                        <p class="text-sm text-gray-800 italic">"AI is democratising knowledge. For peripheral universities, anything that raises grades is good. Critical thinking is a luxury; our students first need high marks to compete in the job market."</p>
+                                    </div>
+                                    <div class="mt-3 pl-4">
+                                        <p class="text-sm text-gray-700 mb-2">
+                                            <span class="font-medium text-indigo-900">Analyse this argument.</span>
+                                        </p>
+
+                                        <div class="flex items-start space-x-2 space-y-2">
+                                            <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">a</span>
+                                            <p class="text-sm text-gray-700 pt-0.5">Identify its <span class="font-medium">premises</span>, <span class="font-medium">conclusion</span>, and</p>
+                                        </div>
+                                        <div class="flex items-start space-x-2 space-y-2">
+                                            <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">b</span>
+                                            <p class="text-sm text-gray-700 pt-0.5">discuss both its <span class="font-medium text-green-700">strengths</span> and
+                                                <span class="font-medium text-red-700">weaknesses</span> from a sociological standpoint.</p>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="argumentAnalysis" name="argumentAnalysis" th:field="*{argumentAnalysis}" rows="10"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
                                 </div>
                             </div>
-
                             <!-- Question 19 -->
                             <div class="mb-6">
-                                <label for="evidenceVsOpinion" class="block text-sm font-medium text-gray-900">19. From the case, list three pieces of evidence and three opinions / interpretations (either by teachers, students, or management). Then explain how confusing evidence with opinion can mislead decision-making about AI policy in the department. <span class="text-red-600">*</span></label>
+                                <label for="evidenceVsOpinion" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    19. From the case, list <span class="font-medium text-indigo-700">three pieces of evidence</span> and <span class="font-medium text-purple-700">three opinions / interpretations</span> (either by teachers, students, or management).
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 space-y-2">
+                                        <p class="text-sm text-gray-700">
+                                            Then explain how confusing <span class="font-medium text-indigo-700">evidence</span> with <span class="font-medium text-purple-700">opinion</span> can mislead decision-making about AI policy in the department.
+                                        </p>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="evidenceVsOpinion" name="evidenceVsOpinion" th:field="*{evidenceVsOpinion}" rows="8"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -863,12 +930,78 @@
                             </div>
                         </div>
 
+                        <!-- Section Divider -->
+                        <div class="mb-8">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div class="w-full border-t-2 border-indigo-200"></div>
+                                </div>
+                                <div class="relative flex justify-center">
+                                        <span class="bg-white px-6 py-2 text-lg font-bold text-indigo-900 shadow-sm rounded-full border-2 border-indigo-200">
+                                            Section C: Inference, Causal Reasoning & Alternative Explanations
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Section C: Inference, Causal Reasoning & Alternative Explanations -->
                         <div class="border-b border-gray-900/10 pb-12">
 
                             <!-- Question 20 -->
                             <div class="mb-6">
-                                <label for="tableInferences" class="block text-sm font-medium text-gray-900">20. Based on Table 1, what inferences can you reasonably draw about the relationship between AI use, academic performance, and critical thinking (as proxied by participation and confidence)? Your answer should: a) Identify at least two possible interpretations of the pattern (e.g., AI helps writing but weakens oral argument), and b) Discuss at least one alternative explanation that does not blame AI alone. <span class="text-red-600">*</span></label>
+                                <label for="tableInferences" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    20. Study the table below showing assessment results before and after AI tool introduction:
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4">
+                                        <div class="overflow-x-auto">
+                                            <table class="min-w-full border-2 border-gray-300 rounded-lg overflow-hidden">
+                                                <thead class="bg-indigo-600 text-white">
+                                                <tr>
+                                                    <th class="px-4 py-3 text-left text-sm font-semibold">Assessment Type</th>
+                                                    <th class="px-4 py-3 text-center text-sm font-semibold">Before AI (Average %)</th>
+                                                    <th class="px-4 py-3 text-center text-sm font-semibold">After AI (Average %)</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="bg-white divide-y divide-gray-200">
+                                                <tr class="hover:bg-gray-50">
+                                                    <td class="px-4 py-3 text-sm text-gray-900">Written assignments</td>
+                                                    <td class="px-4 py-3 text-sm text-center text-gray-700">68</td>
+                                                    <td class="px-4 py-3 text-sm text-center font-semibold text-green-700">85</td>
+                                                </tr>
+                                                <tr class="hover:bg-gray-50">
+                                                    <td class="px-4 py-3 text-sm text-gray-900">In-class presentations (oral)</td>
+                                                    <td class="px-4 py-3 text-sm text-center text-gray-700">72</td>
+                                                    <td class="px-4 py-3 text-sm text-center font-semibold text-red-700">64</td>
+                                                </tr>
+                                                <tr class="hover:bg-gray-50">
+                                                    <td class="px-4 py-3 text-sm text-gray-900">Closed-book exams</td>
+                                                    <td class="px-4 py-3 text-sm text-center text-gray-700">65</td>
+                                                    <td class="px-4 py-3 text-sm text-center text-gray-700">66</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 pl-4 space-y-3">
+                                        <p class="text-sm text-gray-700">
+                                            Based on <span class="font-medium text-indigo-900">Table 1</span>, what inferences can you reasonably draw about the relationship between AI use, academic performance, and critical thinking (as proxied by participation and confidence)?
+                                        </p>
+                                        <p class="text-sm font-medium text-indigo-900">Your answer should:</p>
+                                        <div class="space-y-2 pl-2">
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">a</span>
+                                                <p class="text-sm text-gray-700 pt-0.5">
+                                                    Identify at least <span class="font-medium">two possible interpretations</span> of the pattern (e.g., AI helps writing but weakens oral argument), and
+                                                </p>
+                                            </div>
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-indigo-600 text-white rounded-full text-xs font-bold">b</span>
+                                                <p class="text-sm text-gray-700 pt-0.5">
+                                                    Discuss at least <span class="font-medium">one alternative explanation</span> that does not blame AI alone.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="tableInferences" name="tableInferences" th:field="*{tableInferences}" rows="8"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -877,7 +1010,32 @@
 
                             <!-- Question 21 -->
                             <div class="mb-6">
-                                <label for="researchDesign" class="block text-sm font-medium text-gray-900">21. Suppose you are asked to design a small empirical study within the department to test whether AI use is actually diminishing critical thinking among sociology students. Briefly outline: a) Your research question and hypothesis. b) The key variables (at least one independent and one dependent variable; mention possible confounders). c) Your basic design (e.g., comparison of AI users vs non-users, pre-test/post-test, mixed methods). d) One ethical concern related to AI use in this research. <span class="text-red-600">*</span></label>
+                                <label for="researchDesign" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    21. Suppose you are asked to design a small empirical study within the department to test whether AI use is actually diminishing critical thinking among sociology students.
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 space-y-3">
+                                        <p class="text-sm text-gray-700">Briefly outline:</p>
+                                        <div class="space-y-2 pl-2">
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[20px] h-5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mt-0.5">a</span>
+                                                <p class="text-sm text-gray-700">Your <span class="font-medium">research question</span> and <span class="font-medium">hypothesis</span></p>
+                                            </div>
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[20px] h-5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mt-0.5">b</span>
+                                                <p class="text-sm text-gray-700">The key <span class="font-medium">variables</span> (at least one independent and one dependent variable; mention possible confounders)</p>
+                                            </div>
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[20px] h-5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mt-0.5">c</span>
+                                                <p class="text-sm text-gray-700">Your basic <span class="font-medium">design</span> (e.g., comparison of AI users vs non-users, pre-test/post-test, mixed methods)</p>
+                                            </div>
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[20px] h-5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mt-0.5">d</span>
+                                                <p class="text-sm text-gray-700">One <span class="font-medium">ethical concern</span> related to AI use in this research</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+
                                 <div class="mt-2">
                                     <textarea id="researchDesign" name="researchDesign" th:field="*{researchDesign}" rows="10"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -885,11 +1043,51 @@
                             </div>
                         </div>
 
+
+                        <!-- Section Divider -->
+                        <div class="mb-8">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div class="w-full border-t-2 border-indigo-200"></div>
+                                </div>
+                                <div class="relative flex justify-center">
+                                        <span class="bg-white px-6 py-2 text-lg font-bold text-indigo-900 shadow-sm rounded-full border-2 border-indigo-200">
+                                            Section D: Self-Regulation & Meta-Reflection
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Section D: Self-Regulation & Meta-Reflection -->
                         <div class="border-b border-gray-900/10 pb-12">
                             <!-- Question 22 -->
                             <div class="mb-6">
-                                <label for="learningBenefit" class="block text-sm font-medium text-gray-900">22. Do you think your own learning in sociology would benefit more from: a) Limited or no AI use, or b) Guided / critical use of AI tools? Choose one and justify your position in about 120–150 words, drawing on at least one sociological theory or concept (e.g., habitus, disciplinary power, rationalisation, McDonaldization, etc.). <span class="text-red-600">*</span></label>
+                                <label for="learningBenefit" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    22. Do you think your own learning in sociology would benefit more from:
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 space-y-3">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="inline-flex items-center justify-center min-w-[28px] h-7 bg-red-600 text-white rounded-full text-xs font-bold">a</span>
+                                            <p class="text-sm text-gray-800 pt-1">
+                                                <span class="font-medium text-red-700">Limited or no AI use</span>, or
+                                            </p>
+                                        </div>
+                                        <div class="flex items-start space-x-3">
+                                            <span class="inline-flex items-center justify-center min-w-[28px] h-7 bg-green-600 text-white rounded-full text-xs font-bold">b</span>
+                                            <p class="text-sm text-gray-800 pt-1">
+                                                <span class="font-medium text-green-700">Guided / critical use</span> of AI tools?
+                                            </p>
+                                        </div>
+                                        <div class="mt-3 pt-3 border-t border-gray-300">
+                                            <p class="text-sm text-gray-700">
+                                                <span class="font-medium text-indigo-900">Choose one and justify your position</span> in about 120–150 words, drawing on at least one sociological theory or concept
+                                                <span class="text-gray-600 italic">(e.g., habitus, disciplinary power, rationalisation, McDonaldization, etc.)</span>.
+                                            </p>
+                                            <p class="text-sm text-amber-700 font-medium mt-2">
+                                                📝 Write between 120-150 words.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="learningBenefit" name="learningBenefit" th:field="*{learningBenefit}" rows="6"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
@@ -899,7 +1097,32 @@
 
                             <!-- Question 23 -->
                             <div class="mb-6">
-                                <label for="aiUsageReflection" class="block text-sm font-medium text-gray-900">23. Briefly describe how you used AI during this test (or why you chose not to). Evaluate: a) In which question(s) did AI genuinely help your critical thinking, and b) In which question(s) do you think AI may have weakened your independent thinking? Be as honest and specific as possible. <span class="text-red-600">*</span></label>
+                                <label for="aiUsageReflection" class="block text-base font-semibold text-gray-900 mb-3 leading-relaxed">
+                                    23. Briefly describe how you used AI during this test (or why you chose not to).
+                                    <span class="text-red-600">*</span>
+                                    <div class="mt-3 pl-4 space-y-3">
+                                        <p class="text-sm font-medium text-indigo-900">Evaluate:</p>
+                                        <div class="space-y-2 pl-2">
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-green-600 text-white rounded-full text-xs font-bold">a</span>
+                                                <p class="text-sm text-gray-700 pt-0.5">
+                                                    In which question(s) did AI <span class="font-medium text-green-700">genuinely help</span> your critical thinking, and
+                                                </p>
+                                            </div>
+                                            <div class="flex items-start space-x-2">
+                                                <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-red-600 text-white rounded-full text-xs font-bold">b</span>
+                                                <p class="text-sm text-gray-700 pt-0.5">
+                                                    In which question(s) do you think AI may have <span class="font-medium text-red-700">weakened</span> your independent thinking?
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 pt-3 border-t border-gray-300">
+                                            <p class="text-sm text-indigo-700 font-medium">
+                                                💭 Be as honest and specific as possible.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="mt-2">
                                     <textarea id="aiUsageReflection" name="aiUsageReflection" th:field="*{aiUsageReflection}" rows="6"
                                               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
