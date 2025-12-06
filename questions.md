@@ -22,16 +22,16 @@
 ## 5. Current Academic Year and Semester
 - **Type:** Dropdown list
 - **Options:**
-    - Bachelor 1st Year 1st Semester → value `111`
-    - Bachelor 1st Year 2nd Semester → value `112`
-    - Bachelor 2nd Year 1st Semester → value `121`
-    - Bachelor 2nd Year 2nd Semester → value `122`
-    - Bachelor 3rd Year 1st Semester → value `131`
-    - Bachelor 3rd Year 2nd Semester → value `132`
-    - Bachelor 4th Year 1st Semester → value `141`
-    - Bachelor 4th Year 2nd Semester → value `142`
-    - Master's 1st Year 1st Semester → value `211`
-    - Master's 1st Year 2nd Semester → value `212`
+    - Bachelor 1st Year 1st Semester → value `B_Y1_S1`
+    - Bachelor 1st Year 2nd Semester → value `B_Y1_S2`
+    - Bachelor 2nd Year 1st Semester → value `B_Y2_S1`
+    - Bachelor 2nd Year 2nd Semester → value `B_Y2_S2`
+    - Bachelor 3rd Year 1st Semester → value `B_Y3_S1`
+    - Bachelor 3rd Year 2nd Semester → value `B_Y3_S2`
+    - Bachelor 4th Year 1st Semester → value `B_Y4_S1`
+    - Bachelor 4th Year 2nd Semester → value `B_Y4_S2`
+    - Master's 1st Year 1st Semester → value `M_Y1_S1`
+    - Master's 1st Year 2nd Semester → value `M_Y1_S2`
 
 ## 6. Where do you come from?
 - **Type:** Radio button

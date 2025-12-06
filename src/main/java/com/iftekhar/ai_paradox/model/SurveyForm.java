@@ -37,8 +37,8 @@ public class SurveyForm {
     @Column(name = "level_of_study", nullable = false, length = 50)
     private String levelOfStudy; // Bachelor's or Master's
 
-    @Column(name = "academic_year_semester", nullable = false, length = 10)
-    private String academicYearSemester; // 111, 112, 121, etc.
+    @Column(name = "academic_year_semester", nullable = false, length = 20)
+    private String academicYearSemester; // B_Y1_S1, B_Y1_S2, B_Y2_S1, ..., M_Y1_S1, M_Y1_S2
 
     @Column(name = "location", nullable = false, length = 20)
     private String location; // Rural or Urban

@@ -280,6 +280,18 @@
                                     <p class="field-label">5. Current Academic Year and Semester</p>
                                     <p class="mt-1">
                                     <span th:switch="${survey.academicYearSemester}">
+                                        <!-- New codes -->
+                                        <span th:case="'B_Y1_S1'">Bachelor 1st Year 1st Semester</span>
+                                        <span th:case="'B_Y1_S2'">Bachelor 1st Year 2nd Semester</span>
+                                        <span th:case="'B_Y2_S1'">Bachelor 2nd Year 1st Semester</span>
+                                        <span th:case="'B_Y2_S2'">Bachelor 2nd Year 2nd Semester</span>
+                                        <span th:case="'B_Y3_S1'">Bachelor 3rd Year 1st Semester</span>
+                                        <span th:case="'B_Y3_S2'">Bachelor 3rd Year 2nd Semester</span>
+                                        <span th:case="'B_Y4_S1'">Bachelor 4th Year 1st Semester</span>
+                                        <span th:case="'B_Y4_S2'">Bachelor 4th Year 2nd Semester</span>
+                                        <span th:case="'M_Y1_S1'">Master's 1st Year 1st Semester</span>
+                                        <span th:case="'M_Y1_S2'">Master's 1st Year 2nd Semester</span>
+                                        <!-- Backward compatibility with old numeric values -->
                                         <span th:case="'111'">Bachelor 1st Year 1st Semester</span>
                                         <span th:case="'112'">Bachelor 1st Year 2nd Semester</span>
                                         <span th:case="'121'">Bachelor 2nd Year 1st Semester</span>

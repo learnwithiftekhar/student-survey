@@ -39,7 +39,10 @@ public class SurveyFormDTO implements Serializable {
     private String levelOfStudy;
 
     @NotBlank(message = "Academic year and semester is required")
-    @Pattern(regexp = "111|112|121|122|131|132|141|142|211|212", message = "Invalid academic year and semester")
+    @Pattern(
+            regexp = "B_Y1_S1|B_Y1_S2|B_Y2_S1|B_Y2_S2|B_Y3_S1|B_Y3_S2|B_Y4_S1|B_Y4_S2|M_Y1_S1|M_Y1_S2",
+            message = "Invalid academic year and semester"
+    )
     private String academicYearSemester;
 
     @NotBlank(message = "Location is required")

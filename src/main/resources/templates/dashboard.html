@@ -20,7 +20,7 @@
                 <div th:if="${totalItems > evaluatedCount}">
                     <form th:action="@{/dashboard/evaluate-all}"
                           method="post"
-                          onsubmit="return confirm('Are you sure you want to evaluate all ' + ${totalItems - evaluatedCount} + ' pending surveys? This will call OpenAI API multiple times and may take several minutes.');">
+                          th:attr="onsubmit=|return confirm('Are you sure you want to evaluate all ' + ${totalItems - evaluatedCount} + ' pending surveys? This will call OpenAI API multiple times and may take several minutes.');|">
                         <button type="submit"
                                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,6 +198,18 @@
                                 <div class="text-sm font-medium text-gray-900" th:text="${survey.name}">John Doe</div>
                                 <div class="text-xs text-gray-500">
                                     <span th:switch="${survey.academicYearSemester}">
+                                        <!-- New codes -->
+                                        <span th:case="'B_Y1_S1'">B Y1 S1</span>
+                                        <span th:case="'B_Y1_S2'">B Y1 S2</span>
+                                        <span th:case="'B_Y2_S1'">B Y2 S1</span>
+                                        <span th:case="'B_Y2_S2'">B Y2 S2</span>
+                                        <span th:case="'B_Y3_S1'">B Y3 S1</span>
+                                        <span th:case="'B_Y3_S2'">B Y3 S2</span>
+                                        <span th:case="'B_Y4_S1'">B Y4 S1</span>
+                                        <span th:case="'B_Y4_S2'">B Y4 S2</span>
+                                        <span th:case="'M_Y1_S1'">M Y1 S1</span>
+                                        <span th:case="'M_Y1_S2'">M Y1 S2</span>
+                                        <!-- Backward compatibility with old numeric values -->
                                         <span th:case="'111'">B Y1 S1</span>
                                         <span th:case="'112'">B Y1 S2</span>
                                         <span th:case="'121'">B Y2 S1</span>
