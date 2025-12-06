@@ -23,6 +23,10 @@ public class SurveyForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "group_type", nullable = false, length = 20)
+    private GroupType groupType;
+
     // ===== Basic Information =====
 
     @Column(name = "name", nullable = false, length = 100)

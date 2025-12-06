@@ -31,6 +31,38 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6 border border-indigo-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">Study Group</p>
+                                <p class="text-2xl font-bold"
+                                   th:classappend="${survey.groupType.name() == 'GROUP_A'} ? 'text-indigo-600' : 'text-purple-600'"
+                                   th:text="${survey.groupDisplayName}">
+                                    Group A - AI Enabled
+                                </p>
+                            </div>
+                            <div th:if="${survey.groupType.name() == 'GROUP_A'}"
+                                 class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div th:if="${survey.groupType.name() == 'GROUP_B'}"
+                                 class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3" th:if="${survey.groupType.name() == 'GROUP_A'}">
+                            This student had access to AI assistance during the survey
+                        </p>
+                        <p class="text-xs text-gray-500 mt-3" th:if="${survey.groupType.name() == 'GROUP_B'}">
+                            This student completed the survey without AI assistance
+                        </p>
+                    </div>
+                </div>
                 <!-- ✅ EVALUATION SCORES SECTION - NOW AT THE TOP -->
                 <div th:if="${survey.evaluated and evaluations != null}" class="mb-8">
                     <div class="bg-white shadow-lg rounded-lg overflow-hidden">

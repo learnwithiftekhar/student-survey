@@ -1,6 +1,9 @@
 package com.iftekhar.ai_paradox.repository;
 
+import com.iftekhar.ai_paradox.model.GroupType;
 import com.iftekhar.ai_paradox.model.SurveyForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -106,4 +109,37 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
      * Delete survey forms older than specified date
      */
     void deleteByCreatedAtBefore(LocalDateTime date);
+
+    /**
+     * ✅ NEW - Find all surveys by group type with pagination
+     */
+    Page<SurveyForm> findByGroupType(GroupType groupType, Pageable pageable);
+
+    /**
+     * ✅ NEW - Find all surveys by group type (list)
+     */
+    List<SurveyForm> findByGroupType(GroupType groupType);
+
+    /**
+     * ✅ NEW - Count surveys by group type
+     */
+    long countByGroupType(GroupType groupType);
+
+    /**
+     * ✅ NEW - Count completed surveys by group
+     */
+    long countByGroupTypeAndIsCompleted(GroupType groupType, Boolean isCompleted);
+
+    /**
+     * ✅ NEW - Get survey IDs by group type (useful for joining with evaluations)
+     */
+    @Query("SELECT s.id FROM SurveyForm s WHERE s.groupType = :groupType")
+    List<Long> findSurveyIdsByGroupType(@Param("groupType") GroupType groupType);
+
+    /**
+     * ✅ NEW - Find surveys with their evaluation status by group
+     */
+    @Query("SELECT s FROM SurveyForm s WHERE s.groupType = :groupType ORDER BY s.createdAt DESC")
+    List<SurveyForm> findByGroupTypeOrderByCreatedAtDesc(@Param("groupType") GroupType groupType);
+
 }

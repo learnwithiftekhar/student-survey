@@ -118,7 +118,7 @@ VALUES (
            'B2',
            'AI, democratisation and “luxury” of CT',
            'A colleague argues:\n'
-               '“AI is democratising knowledge. For peripheral universities, anything that raises grades is good. '
+               '“AI is democratizing knowledge. For peripheral universities, anything that raises grades is good. Critical thinking is a luxury; our students first need high marks to compete in the job market '
                'Critical thinking is a luxury; our students first need high marks to compete in the job market.”\n'
                'a) Reconstruct this argument in standard form (premises + conclusion).\n'
                'b) Critically analyse the strengths and weaknesses of this argument using at least two sociological concepts '

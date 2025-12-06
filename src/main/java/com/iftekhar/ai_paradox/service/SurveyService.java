@@ -6,6 +6,7 @@ import com.iftekhar.ai_paradox.dto.EvaluationDisplayDto;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
 import com.iftekhar.ai_paradox.model.CtEvaluation;
 import com.iftekhar.ai_paradox.model.CtQuestion;
+import com.iftekhar.ai_paradox.model.GroupType;
 import com.iftekhar.ai_paradox.model.SurveyForm;
 import com.iftekhar.ai_paradox.repository.CtEvaluationRepository;
 import com.iftekhar.ai_paradox.repository.CtQuestionRepository;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,8 +44,17 @@ public class SurveyService {
             throw new IllegalArgumentException("A survey with this Student ID already exists");
         }
 
+        // ✅ NEW - Validate group type
+        if (surveyFormDTO.getGroupType() == null) {
+            throw new IllegalArgumentException("Group type is required");
+        }
+
+
         // Step 1: Save basic survey info to survey_forms table
         SurveyForm surveyForm = new SurveyForm();
+
+        // ✅ NEW - Set group type
+        surveyForm.setGroupType(surveyFormDTO.getGroupType());
         surveyForm.setName(surveyFormDTO.getName());
         surveyForm.setStudentId(surveyFormDTO.getStudentId());
         surveyForm.setAge(surveyFormDTO.getAge());
@@ -221,6 +228,7 @@ public class SurveyService {
     private SurveyFormDTO buildDTOWithAnswers(SurveyForm survey, List<CtEvaluation> evaluations, boolean isEvaluated) {  // ✅ Add parameter
         SurveyFormDTO dto = SurveyFormDTO.builder()
                 .id(survey.getId())
+                .groupType(survey.getGroupType())  // ✅ NEW - Add group type
                 .name(survey.getName())
                 .studentId(survey.getStudentId())
                 .age(survey.getAge())
@@ -398,5 +406,209 @@ public class SurveyService {
         log.info("Found {} unevaluated surveys out of {} total surveys",
                 unevaluatedIds.size(), allSurveyIds.size());
         return unevaluatedIds;
+    }
+
+    // ========== ✅ NEW METHODS - GROUP-RELATED OPERATIONS ==========
+
+    /**
+     * ✅ NEW - Get all surveys by group type with pagination
+     */
+    @Transactional(readOnly = true)
+    public Page<SurveyFormDTO> getAllSurveysByGroup(GroupType groupType, Pageable pageable) {
+        log.info("Fetching surveys for {}", groupType);
+
+        Page<SurveyForm> surveyPage = surveyFormRepository.findByGroupType(groupType, pageable);
+
+        return surveyPage.map(survey -> {
+            List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
+            boolean isEvaluated = evaluations.stream()
+                    .allMatch(eval -> eval.getScore() != null);
+
+            SurveyFormDTO dto = buildDTOWithAnswers(survey, evaluations, isEvaluated);
+
+            if (isEvaluated) {
+                Integer totalScore = evaluations.stream()
+                        .mapToInt(e -> e.getScore() != null ? e.getScore() : 0)
+                        .sum();
+                dto.setTotalScore(totalScore);
+
+                Map<String, Object> overallScore = calculateOverallCTScore(totalScore);
+                if (overallScore != null && overallScore.containsKey("implication")) {
+                    Map<String, String> implication = (Map<String, String>) overallScore.get("implication");
+                    dto.setCtLevel(implication.get("label"));
+                    dto.setCtLevelColor(implication.get("color"));
+                }
+            }
+
+            return dto;
+        });
+    }
+
+    /**
+     * ✅ NEW - Count surveys by group
+     */
+    @Transactional(readOnly = true)
+    public long countByGroup(GroupType groupType) {
+        return surveyFormRepository.countByGroupType(groupType);
+    }
+
+    /**
+     * ✅ NEW - Get comprehensive statistics for a specific group
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Object> getGroupStatistics(GroupType groupType) {
+        log.info("Calculating statistics for {}", groupType);
+
+        Map<String, Object> stats = new HashMap<>();
+
+        // Basic counts
+        long totalCount = surveyFormRepository.countByGroupType(groupType);
+        long completedCount = surveyFormRepository.countByGroupTypeAndIsCompleted(groupType, true);
+
+        stats.put("totalSurveys", totalCount);
+        stats.put("completedSurveys", completedCount);
+        stats.put("groupName", groupType.getDisplayName());
+
+        // Get all surveys for this group
+        List<SurveyForm> surveys = surveyFormRepository.findByGroupType(groupType);
+
+        // Calculate evaluation statistics
+        int evaluatedCount = 0;
+        List<Integer> totalScores = new ArrayList<>();
+        Map<String, Integer> ctLevelCounts = new HashMap<>();
+
+        for (SurveyForm survey : surveys) {
+            List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
+
+            // Check if ALL questions for this survey have been evaluated
+            boolean isEvaluated = !evaluations.isEmpty() &&
+                    evaluations.stream().allMatch(eval -> eval.getScore() != null);
+
+            if (isEvaluated) {
+                evaluatedCount++;
+
+                // Calculate total score
+                int totalScore = evaluations.stream()
+                        .mapToInt(e -> e.getScore() != null ? e.getScore() : 0)
+                        .sum();
+                totalScores.add(totalScore);
+
+                // Categorize CT level
+                Map<String, Object> overallScore = calculateOverallCTScore(totalScore);
+                if (overallScore != null && overallScore.containsKey("implication")) {
+                    Map<String, String> implication = (Map<String, String>) overallScore.get("implication");
+                    String ctLevel = implication.get("label");
+                    ctLevelCounts.put(ctLevel, ctLevelCounts.getOrDefault(ctLevel, 0) + 1);
+                }
+            }
+        }
+
+        stats.put("evaluatedCount", evaluatedCount);
+        stats.put("ctLevelDistribution", ctLevelCounts);
+
+        // Calculate score statistics
+        if (!totalScores.isEmpty()) {
+            double averageScore = totalScores.stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0.0);
+            int minScore = totalScores.stream()
+                    .mapToInt(Integer::intValue)
+                    .min()
+                    .orElse(0);
+            int maxScore = totalScores.stream()
+                    .mapToInt(Integer::intValue)
+                    .max()
+                    .orElse(0);
+
+            stats.put("averageScore", String.format("%.2f", averageScore));
+            stats.put("minScore", minScore);
+            stats.put("maxScore", maxScore);
+            stats.put("scoreRange", maxScore - minScore);
+        } else {
+            stats.put("averageScore", "N/A");
+            stats.put("minScore", "N/A");
+            stats.put("maxScore", "N/A");
+            stats.put("scoreRange", "N/A");
+        }
+
+        // Demographics
+        Map<String, Long> locationDistribution = surveys.stream()
+                .collect(Collectors.groupingBy(SurveyForm::getLocation, Collectors.counting()));
+        stats.put("locationDistribution", locationDistribution);
+
+        return stats;
+    }
+
+    /**
+     * ✅ NEW - Get comparison data between groups
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Object> compareGroups() {
+        log.info("Generating group comparison data");
+
+        Map<String, Object> comparison = new HashMap<>();
+
+        Map<String, Object> groupAStats = getGroupStatistics(GroupType.GROUP_A);
+        Map<String, Object> groupBStats = getGroupStatistics(GroupType.GROUP_B);
+
+        comparison.put("groupA", groupAStats);
+        comparison.put("groupB", groupBStats);
+
+        // Calculate differences if both groups have evaluated surveys
+        if (groupAStats.containsKey("averageScore") && groupBStats.containsKey("averageScore")) {
+            try {
+                double avgA = Double.parseDouble(groupAStats.get("averageScore").toString());
+                double avgB = Double.parseDouble(groupBStats.get("averageScore").toString());
+                double difference = avgA - avgB;
+
+                comparison.put("averageScoreDifference", String.format("%.2f", difference));
+                comparison.put("groupAPerformsBetter", difference > 0);
+            } catch (NumberFormatException e) {
+                log.warn("Could not calculate score difference");
+            }
+        }
+
+        return comparison;
+    }
+
+    /**
+     * ✅ NEW - Get average score for a group
+     */
+    @Transactional(readOnly = true)
+    public Double getAverageScoreByGroup(GroupType groupType) {
+        // Get all survey IDs for this group
+        List<Long> surveyIds = surveyFormRepository.findSurveyIdsByGroupType(groupType);
+
+        if (surveyIds.isEmpty()) {
+            return 0.0;
+        }
+
+        // Get all evaluations for these surveys
+        List<CtEvaluation> evaluations = ctEvaluationRepository.findAll().stream()
+                .filter(e -> surveyIds.contains(e.getSurveyId()) && e.getScore() != null)
+                .collect(Collectors.toList());
+
+        if (evaluations.isEmpty()) {
+            return 0.0;
+        }
+
+        return evaluations.stream()
+                .mapToInt(CtEvaluation::getScore)
+                .average()
+                .orElse(0.0);
+    }
+
+    /**
+     * Calculate overall CT score
+     * NO CHANGES
+     */
+    private Map<String, Object> calculateOverallCTScore(int totalScore) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalScore", totalScore);
+        result.put("maxScore", 60);
+        result.put("percentage", (totalScore * 100.0) / 60);
+        result.put("implication", getScoreImplication(totalScore));
+        return result;
     }
 }

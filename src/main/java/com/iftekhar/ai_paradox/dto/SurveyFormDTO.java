@@ -1,5 +1,6 @@
 package com.iftekhar.ai_paradox.dto;
 
+import com.iftekhar.ai_paradox.model.GroupType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,9 @@ import java.util.Set;
 public class SurveyFormDTO implements Serializable {
 
     private Long id;
+
+    @NotNull(message = "Group type is required")
+    private GroupType groupType;
 
     // ===== Basic Information =====
 
@@ -146,6 +150,11 @@ public class SurveyFormDTO implements Serializable {
     private Double scorePercentage;
     private String ctLevel;           // e.g., "Advanced / High CT"
     private String ctLevelColor;
+    private Integer totalScore;
+
+    public String getGroupDisplayName() {
+        return groupType != null ? groupType.getDisplayName() : "Not Set";
+    }
 
     // ===== Custom Validation Methods =====
 

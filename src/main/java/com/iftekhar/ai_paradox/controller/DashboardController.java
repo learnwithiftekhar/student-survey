@@ -4,6 +4,7 @@ import com.iftekhar.ai_paradox.dto.BatchEvaluationRequest;
 import com.iftekhar.ai_paradox.dto.BatchEvaluationResult;
 import com.iftekhar.ai_paradox.dto.EvaluationDisplayDto;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
+import com.iftekhar.ai_paradox.model.GroupType;
 import com.iftekhar.ai_paradox.service.CtScoringService;
 import com.iftekhar.ai_paradox.service.SurveyService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class DashboardController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String group,
             Model model
     ) {
         log.info("Listing surveys - page: {}, size: {}, sortBy: {}, sortDir: {}", page, size, sortBy, sortDir);
@@ -44,16 +46,39 @@ public class DashboardController {
                 Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<SurveyFormDTO> surveyPage = surveyService.getAllSurveys(pageable);
+
+        // ✅ NEW - Filter by group if specified
+        Page<SurveyFormDTO> surveyPage;
+        if (group != null && !group.isEmpty()) {
+            try {
+                GroupType groupType = GroupType.valueOf(group);
+                surveyPage = surveyService.getAllSurveysByGroup(groupType, pageable);
+                model.addAttribute("groupFilter", group);
+                log.info("Filtered surveys by {}: {} results", groupType, surveyPage.getTotalElements());
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid group filter: {}", group);
+                surveyPage = surveyService.getAllSurveys(pageable);
+                model.addAttribute("groupFilter", null);
+            }
+        } else {
+            surveyPage = surveyService.getAllSurveys(pageable);
+            model.addAttribute("groupFilter", null);
+        }
+
 
         long evaluatedCount = surveyService.getEvaluatedSurveysCount();
+
+        long groupACount = surveyService.countByGroup(GroupType.GROUP_A);
+        long groupBCount = surveyService.countByGroup(GroupType.GROUP_B);
 
 
         model.addAttribute("surveys", surveyPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", surveyPage.getTotalPages());
         model.addAttribute("totalItems", surveyPage.getTotalElements());
-        model.addAttribute("evaluatedCount", evaluatedCount);  // ✅ Add this
+        model.addAttribute("evaluatedCount", evaluatedCount);
+        model.addAttribute("groupACount", groupACount);
+        model.addAttribute("groupBCount", groupBCount);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         return "dashboard";
@@ -229,4 +254,22 @@ public class DashboardController {
         return "redirect:/dashboard";
     }
 
+    /**
+     * ✅ NEW - Show group comparison page
+     */
+    @GetMapping("/group-comparison")
+    public String showGroupComparison(Model model) {
+        log.info("Loading group comparison statistics");
+
+        try {
+            Map<String, Object> comparison = surveyService.compareGroups();
+            model.addAttribute("comparison", comparison);
+
+            return "group-comparison";
+        } catch (Exception e) {
+            log.error("Error loading group comparison", e);
+            model.addAttribute("error", "Failed to load comparison: " + e.getMessage());
+            return "dashboard";
+        }
+    }
 }

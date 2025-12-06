@@ -25,6 +25,38 @@
 
                 <form id="studentSurveyForm" th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
 
+                    <!-- Add this near the top of the form -->
+                    <div th:if="${selectedGroup != null}" class="mb-6 p-4 rounded-lg"
+                         th:classappend="${isAIEnabled ? 'bg-indigo-50 border-indigo-200' : 'bg-purple-50 border-purple-200'}">
+                        <div class="flex items-center">
+                            <svg th:if="${isAIEnabled}" class="w-5 h-5 text-indigo-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <svg th:unless="${isAIEnabled}" class="w-5 h-5 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            <p class="font-semibold"
+                               th:classappend="${isAIEnabled ? 'text-indigo-900' : 'text-purple-900'}"
+                               th:text="${selectedGroup.displayName}">
+                                Group Assignment
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- Section Divider -->
+                    <div class="mb-8">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div class="w-full border-t-2 border-indigo-200"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                                        <span class="bg-white px-6 py-2 text-lg font-bold text-indigo-900 shadow-sm rounded-full border-2 border-indigo-200">
+                                            Section 0: Socio-Demographic Characteristics
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Basic Information Section -->
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
@@ -678,6 +710,108 @@
                                 </div>
                             </div>
 
+                            <!-- Case Study Section -->
+                            <div class="mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-8 border-2 border-indigo-200 shadow-lg">
+                                <div class="flex items-start mb-6">
+                                    <div class="flex-shrink-0">
+                                        <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <h3 class="text-2xl font-bold text-indigo-900 mb-2">Case Study</h3>
+                                        <p class="text-sm font-medium text-indigo-700">Read this case carefully before answering the following sections</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white rounded-lg p-6 border border-indigo-100 shadow-sm">
+                                    <div class="prose prose-sm max-w-none">
+                                        <p class="text-gray-800 leading-relaxed mb-4">
+                                            A peripheral public university in Bangladesh introduces <strong>AI-powered writing assistants</strong>
+                                            (e.g., chatbots and paraphrasing tools) in its sociology department. Within one semester, average
+                                            assignment grades in key theory courses rise from <strong>B- to A-</strong>. Many students report
+                                            that AI helps them <em>"write faster"</em> and <em>"sound more academic."</em>
+                                        </p>
+
+                                        <p class="text-gray-800 leading-relaxed mb-4">
+                                            However, several teachers notice new problems:
+                                        </p>
+
+                                        <ul class="space-y-3 mb-4 ml-6">
+                                            <li class="text-gray-700 flex items-start">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 mr-3 text-indigo-600 bg-indigo-100 rounded-full flex-shrink-0 mt-0.5">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="flex-1">In class discussions, students often <strong>struggle to explain arguments</strong> that appear in their written assignments.</span>
+                                            </li>
+                                            <li class="text-gray-700 flex items-start">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 mr-3 text-indigo-600 bg-indigo-100 rounded-full flex-shrink-0 mt-0.5">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="flex-1">When asked follow-up questions, many students give <strong>vague or generic answers</strong>.</span>
+                                            </li>
+                                            <li class="text-gray-700 flex items-start">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 mr-3 text-indigo-600 bg-indigo-100 rounded-full flex-shrink-0 mt-0.5">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="flex-1">Some students admit they rely on AI to <strong>"generate arguments"</strong> instead of thinking them through.</span>
+                                            </li>
+                                            <li class="text-gray-700 flex items-start">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 mr-3 text-indigo-600 bg-indigo-100 rounded-full flex-shrink-0 mt-0.5">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="flex-1">University management views the higher grades as a sign of improved academic performance and starts promoting AI use as a <strong>success story of "smart learning"</strong> in a peripheral campus.</span>
+                                            </li>
+                                        </ul>
+
+                                        <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-sm text-amber-800 font-medium">
+                                                        A small departmental committee is formed to examine whether AI is actually
+                                                        <strong>enhancing learning</strong> or <strong>diminishing critical thinking</strong>
+                                                        among sociology students.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-6 bg-indigo-100 border border-indigo-200 rounded-lg p-4">
+                                            <p class="text-indigo-900 font-semibold text-center">
+                                                📝 Students answer the following sections based on this case.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Divider -->
+                            <div class="mb-8">
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div class="w-full border-t-2 border-indigo-200"></div>
+                                    </div>
+                                    <div class="relative flex justify-center">
+                                        <span class="bg-white px-6 py-2 text-lg font-bold text-indigo-900 shadow-sm rounded-full border-2 border-indigo-200">
+                                            Section A: Interpretation & Clarification
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Question 15 -->
                             <div class="mb-6">
                                 <label for="coreProblemSummary" class="block text-sm font-medium text-gray-900">15. In your own words, summarise the core problem presented in the case in no more than 120 words. Your summary should clearly show: a) The role of AI in students' academic performance, and b) The concern about students' critical thinking. <span class="text-red-600">*</span></label>
@@ -700,7 +834,6 @@
 
                         <!-- Section B: Analysis of Assumptions & Arguments -->
                         <div class="border-b border-gray-900/10 pb-12">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section B: Analysis of Assumptions & Arguments</h2>
 
                             <!-- Question 17 -->
                             <div class="mb-6">
@@ -732,7 +865,6 @@
 
                         <!-- Section C: Inference, Causal Reasoning & Alternative Explanations -->
                         <div class="border-b border-gray-900/10 pb-12">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section C: Inference, Causal Reasoning & Alternative Explanations</h2>
 
                             <!-- Question 20 -->
                             <div class="mb-6">
@@ -755,8 +887,6 @@
 
                         <!-- Section D: Self-Regulation & Meta-Reflection -->
                         <div class="border-b border-gray-900/10 pb-12">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-6">Section D: Self-Regulation & Meta-Reflection</h2>
-
                             <!-- Question 22 -->
                             <div class="mb-6">
                                 <label for="learningBenefit" class="block text-sm font-medium text-gray-900">22. Do you think your own learning in sociology would benefit more from: a) Limited or no AI use, or b) Guided / critical use of AI tools? Choose one and justify your position in about 120–150 words, drawing on at least one sociological theory or concept (e.g., habitus, disciplinary power, rationalisation, McDonaldization, etc.). <span class="text-red-600">*</span></label>
