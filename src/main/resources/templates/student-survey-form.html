@@ -58,24 +58,22 @@
                             </div>
 
                             <!-- Question 4: Level of Study -->
+                            <!-- Question 4: Ethical Considerations -->
                             <div class="mb-6">
-                                <fieldset>
-                                    <legend class="text-sm font-medium text-gray-900 mb-3">4. Level of Study <span class="text-red-600">*</span></legend>
-                                    <div class="space-y-3">
-                                        <div class="flex items-center gap-x-3">
-                                            <input id="level-bachelors" type="radio" name="levelOfStudy" value="Bachelor's" th:field="*{levelOfStudy}"
-                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
-                                            <label for="level-bachelors" class="block text-sm text-gray-900">Bachelor's</label>
-                                        </div>
-                                        <div class="flex items-center gap-x-3">
-                                            <input id="level-masters" type="radio" name="levelOfStudy" value="Master's" th:field="*{levelOfStudy}"
-                                                   class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
-                                            <label for="level-masters" class="block text-sm text-gray-900">Master's</label>
-                                        </div>
-                                    </div>
-                                </fieldset>
+                                <label for="ethicalConsiderations" class="block text-sm font-medium text-gray-900">
+                                    4. What ethical considerations should students keep in mind when using AI tools for academic work, and why are these important
+                                    <span class="text-red-600">*</span>
+                                </label>
+                                <div class="mt-2">
+                                    <textarea id="ethicalConsiderations"
+                                              name="ethicalConsiderations"
+                                              th:field="*{ethicalConsiderations}"
+                                              rows="5"
+                                              placeholder="Discuss ethical considerations such as academic integrity, proper attribution, data privacy, responsible use, etc."
+                                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                    <p class="mt-2 text-sm text-gray-600">Minimum 50 characters</p>
+                                </div>
                             </div>
-
                             <!-- Question 5: Current Academic Year and Semester -->
                             <div class="mb-6">
                                 <label for="academicYearSemester" class="block text-sm font-medium text-gray-900">5. Current Academic Year and Semester <span class="text-red-600">*</span></label>

@@ -51,8 +51,7 @@ public class SurveyService {
         surveyForm.setName(surveyFormDTO.getName());
         surveyForm.setStudentId(surveyFormDTO.getStudentId());
         surveyForm.setAge(surveyFormDTO.getAge());
-        surveyForm.setLevelOfStudy(surveyFormDTO.getLevelOfStudy());
-        surveyForm.setAcademicYearSemester(surveyFormDTO.getAcademicYearSemester());
+        surveyForm.setEthicalConsiderations(surveyFormDTO.getEthicalConsiderations());        surveyForm.setAcademicYearSemester(surveyFormDTO.getAcademicYearSemester());
         surveyForm.setLocation(surveyFormDTO.getLocation());
         surveyForm.setDevices(surveyFormDTO.getDevices() != null ? new HashSet<>(surveyFormDTO.getDevices()) : new HashSet<>());
         surveyForm.setDevicesOthersSpecify(surveyFormDTO.getDevicesOthersSpecify());
@@ -159,7 +158,7 @@ public class SurveyService {
                             .name(survey.getName())
                             .studentId(survey.getStudentId())
                             .age(survey.getAge())
-                            .levelOfStudy(survey.getLevelOfStudy())
+                            .ethicalConsiderations(survey.getEthicalConsiderations())
                             .academicYearSemester(survey.getAcademicYearSemester())  // ✅ Add this
                             .location(survey.getLocation())
                             .devices(survey.getDevices())
@@ -225,7 +224,7 @@ public class SurveyService {
                 .name(survey.getName())
                 .studentId(survey.getStudentId())
                 .age(survey.getAge())
-                .levelOfStudy(survey.getLevelOfStudy())
+                .ethicalConsiderations(survey.getEthicalConsiderations())
                 .academicYearSemester(survey.getAcademicYearSemester())
                 .location(survey.getLocation())
                 .devices(survey.getDevices())

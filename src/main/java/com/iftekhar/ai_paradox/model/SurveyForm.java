@@ -34,8 +34,9 @@ public class SurveyForm {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Column(name = "level_of_study", nullable = false, length = 50)
-    private String levelOfStudy; // Bachelor's or Master's
+    @Lob
+    @Column(name = "ethical_considerations", nullable = false, columnDefinition = "TEXT")
+    private String ethicalConsiderations; // NEW: Replaces levelOfStudy
 
     @Column(name = "academic_year_semester", nullable = false, length = 20)
     private String academicYearSemester; // B_Y1_S1, B_Y1_S2, B_Y2_S1, ..., M_Y1_S1, M_Y1_S2

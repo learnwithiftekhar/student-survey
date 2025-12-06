@@ -269,11 +269,15 @@
                                     <p class="field-value mt-1" th:text="${survey.age}">22</p>
                                 </div>
 
-                                <!-- Level of Study -->
-                                <div>
-                                    <p class="field-label">4. Level of Study</p>
-                                    <span class="badge badge-blue mt-1" th:text="${survey.levelOfStudy}">Bachelor's</span>
+
+                                <!-- Ethical Considerations -->
+                                <div class="col-span-full">
+                                    <p class="field-label">4. What ethical considerations should students keep in mind when using AI tools for academic work?</p>
+                                    <p class="field-value mt-1 whitespace-pre-wrap" th:text="${survey.ethicalConsiderations}">
+                                    </p>
                                 </div>
+
+                                <!-- NOTE: Remove the old "Level of Study" badge display completely -->
 
                                 <!-- Academic Year and Semester -->
                                 <div>

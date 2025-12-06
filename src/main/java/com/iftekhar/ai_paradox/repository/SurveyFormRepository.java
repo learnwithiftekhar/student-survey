@@ -15,10 +15,6 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
      */
     Optional<SurveyForm> findByStudentId(String studentId);
 
-    /**
-     * Find all survey forms by level of study
-     */
-    List<SurveyForm> findByLevelOfStudy(String levelOfStudy);
 
     /**
      * Find all survey forms by location
@@ -52,11 +48,6 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
     List<SurveyForm> findByAgeRange(@Param("minAge") Integer minAge, @Param("maxAge") Integer maxAge);
 
     /**
-     * Count survey forms by level of study
-     */
-    long countByLevelOfStudy(String levelOfStudy);
-
-    /**
      * Count survey forms by location
      */
     long countByLocation(String location);
@@ -76,14 +67,6 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
      */
     boolean existsByStudentId(String studentId);
 
-    /**
-     * Find survey forms by level of study and location
-     */
-    @Query("SELECT s FROM SurveyForm s WHERE s.levelOfStudy = :levelOfStudy AND s.location = :location")
-    List<SurveyForm> findByLevelOfStudyAndLocation(
-            @Param("levelOfStudy") String levelOfStudy,
-            @Param("location") String location
-    );
 
     /**
      * Find survey forms by AI tools usage and frequency

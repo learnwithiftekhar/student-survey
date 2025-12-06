@@ -34,9 +34,10 @@ public class SurveyFormDTO implements Serializable {
     @Max(value = 35, message = "Age must not exceed 35")
     private Integer age;
 
-    @NotBlank(message = "Level of study is required")
-    @Pattern(regexp = "Bachelor's|Master's", message = "Invalid level of study")
-    private String levelOfStudy;
+    @NotBlank(message = "Ethical considerations answer is required")
+    @Size(min = 50, message = "Please provide more details (at least 50 characters)")
+    private String ethicalConsiderations;
+
 
     @NotBlank(message = "Academic year and semester is required")
     @Pattern(
