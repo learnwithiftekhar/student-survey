@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,40 +37,50 @@ public class SurveyService {
      * Save a new survey submission
      */
     @Transactional
-    public SurveyFormDTO saveSurvey(SurveyFormDTO dto) {
-        log.info("Saving survey for student: {}", dto.getStudentId());
+    public SurveyFormDTO saveSurvey(SurveyFormDTO surveyFormDTO) {
+        log.info("Saving survey for student: {}", surveyFormDTO.getStudentId());
+
+        // Check if student ID already exists (for new surveys only)
+        if (surveyFormDTO.getId() == null && surveyFormRepository.existsByStudentId(surveyFormDTO.getStudentId())) {
+            log.error("Duplicate student ID: {}", surveyFormDTO.getStudentId());
+            throw new IllegalArgumentException("A survey with this Student ID already exists");
+        }
 
         // Step 1: Save basic survey info to survey_forms table
         SurveyForm surveyForm = new SurveyForm();
-        surveyForm.setName(dto.getName());
-        surveyForm.setStudentId(dto.getStudentId());
-        surveyForm.setAge(dto.getAge());
-        surveyForm.setLevelOfStudy(dto.getLevelOfStudy());
-        surveyForm.setLocation(dto.getLocation());
-        surveyForm.setDevices(dto.getDevices());
-        surveyForm.setStudyTools(dto.getStudyTools());
-        surveyForm.setWritingTools(dto.getWritingTools());
-        surveyForm.setNoteTools(dto.getNoteTools());
-        surveyForm.setResearchTools(dto.getResearchTools());
-        surveyForm.setPresentationTools(dto.getPresentationTools());
-        surveyForm.setAiUsageFrequency(dto.getAiUsageFrequency());
-        surveyForm.setLearnedAboutAI(dto.getLearnedAboutAI());
-        surveyForm.setSubmittedByIp(dto.getSubmittedByIp());
-        surveyForm.setIsCompleted(true);
-        surveyForm.setCreatedAt(LocalDateTime.now());
-        surveyForm.setUpdatedAt(LocalDateTime.now());
+        surveyForm.setName(surveyFormDTO.getName());
+        surveyForm.setStudentId(surveyFormDTO.getStudentId());
+        surveyForm.setAge(surveyFormDTO.getAge());
+        surveyForm.setLevelOfStudy(surveyFormDTO.getLevelOfStudy());
+        surveyForm.setAcademicYearSemester(surveyFormDTO.getAcademicYearSemester());
+        surveyForm.setLocation(surveyFormDTO.getLocation());
+        surveyForm.setDevices(surveyFormDTO.getDevices() != null ? new HashSet<>(surveyFormDTO.getDevices()) : new HashSet<>());
+        surveyForm.setDevicesOthersSpecify(surveyFormDTO.getDevicesOthersSpecify());
+        surveyForm.setInternetAccess(surveyFormDTO.getInternetAccess());
+        surveyForm.setHoursOnline(surveyFormDTO.getHoursOnline());
+        surveyForm.setFamiliarWithAI(surveyFormDTO.getFamiliarWithAI());
+        surveyForm.setUseAITools(surveyFormDTO.getUseAITools());
+        surveyForm.setStudyTools(surveyFormDTO.getStudyTools() != null ? new HashSet<>(surveyFormDTO.getStudyTools()) : new HashSet<>());
+        surveyForm.setWritingTools(surveyFormDTO.getWritingTools() != null ? new HashSet<>(surveyFormDTO.getWritingTools()) : new HashSet<>());
+        surveyForm.setNoteTools(surveyFormDTO.getNoteTools() != null ? new HashSet<>(surveyFormDTO.getNoteTools()) : new HashSet<>());
+        surveyForm.setResearchTools(surveyFormDTO.getResearchTools() != null ? new HashSet<>(surveyFormDTO.getResearchTools()) : new HashSet<>());
+        surveyForm.setPresentationTools(surveyFormDTO.getPresentationTools() != null ? new HashSet<>(surveyFormDTO.getPresentationTools()) : new HashSet<>());
+        surveyForm.setAiUsageFrequency(surveyFormDTO.getAiUsageFrequency());
+        surveyForm.setLearnedAboutAI(surveyFormDTO.getLearnedAboutAI());
+        surveyForm.setSubmittedByIp(surveyFormDTO.getSubmittedByIp());
+        surveyForm.setIsCompleted(surveyFormDTO.getIsCompleted() != null ? surveyFormDTO.getIsCompleted() : false);
 
         SurveyForm savedSurvey = surveyFormRepository.save(surveyForm);
         log.info("Saved survey with ID: {}", savedSurvey.getId());
 
         // Step 2: Save answers to ct_evaluation table (with NULL scores initially)
-        saveAnswersToEvaluationTable(savedSurvey.getId(), dto);
+        saveAnswersToEvaluationTable(savedSurvey.getId(), surveyFormDTO);
 
-        dto.setId(savedSurvey.getId());
-        dto.setCreatedAt(savedSurvey.getCreatedAt());
-        dto.setEvaluated(false);  // ✅ New survey is not evaluated yet
+        surveyFormDTO.setId(savedSurvey.getId());
+        surveyFormDTO.setCreatedAt(savedSurvey.getCreatedAt());
+        surveyFormDTO.setEvaluated(false);  // ✅ New survey is not evaluated yet
 
-        return dto;
+        return surveyFormDTO;
     }
 
     /**
@@ -141,6 +152,7 @@ public class SurveyService {
                 .map(survey -> {
                     // Check evaluation status for each survey
                     boolean isEvaluated = ctEvaluationRepository.isSurveyEvaluated(survey.getId());  // ✅ Check status
+
 
                     SurveyFormDTO dto = SurveyFormDTO.builder()
                             .id(survey.getId())
@@ -214,13 +226,19 @@ public class SurveyService {
                 .studentId(survey.getStudentId())
                 .age(survey.getAge())
                 .levelOfStudy(survey.getLevelOfStudy())
+                .academicYearSemester(survey.getAcademicYearSemester())
                 .location(survey.getLocation())
                 .devices(survey.getDevices())
+                .devicesOthersSpecify(survey.getDevicesOthersSpecify())
+                .internetAccess(survey.getInternetAccess())
+                .hoursOnline(survey.getHoursOnline())
+                .familiarWithAI(survey.getFamiliarWithAI())
                 .studyTools(survey.getStudyTools())
                 .writingTools(survey.getWritingTools())
                 .noteTools(survey.getNoteTools())
                 .researchTools(survey.getResearchTools())
                 .presentationTools(survey.getPresentationTools())
+                .aiUsageFrequency(survey.getAiUsageFrequency())
                 .useAITools(survey.getAiUsageFrequency() != null &&
                         !survey.getAiUsageFrequency().equalsIgnoreCase("Never") ? "Yes" : "No")
                 .aiUsageFrequency(survey.getAiUsageFrequency())
