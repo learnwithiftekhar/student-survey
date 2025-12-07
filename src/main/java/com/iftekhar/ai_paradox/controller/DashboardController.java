@@ -6,6 +6,7 @@ import com.iftekhar.ai_paradox.dto.EvaluationDisplayDto;
 import com.iftekhar.ai_paradox.dto.SurveyFormDTO;
 import com.iftekhar.ai_paradox.model.GroupType;
 import com.iftekhar.ai_paradox.service.CtScoringService;
+import com.iftekhar.ai_paradox.service.ExcelExportService;
 import com.iftekhar.ai_paradox.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +31,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DashboardController {
     private final SurveyService surveyService;
-    private final CtScoringService scoringService;  // ✅ Add this
+    private final CtScoringService scoringService;
+    private final ExcelExportService excelExportService;
 
 
     @GetMapping
@@ -254,9 +259,6 @@ public class DashboardController {
         return "redirect:/dashboard";
     }
 
-    /**
-     * ✅ NEW - Show group comparison page
-     */
     @GetMapping("/group-comparison")
     public String showGroupComparison(Model model) {
         log.info("Loading group comparison statistics");
@@ -297,6 +299,30 @@ public class DashboardController {
             log.error("Error loading group statistics", e);
             model.addAttribute("error", "Failed to load statistics: " + e.getMessage());
             return "redirect:/dashboard";
+        }
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<byte[]> exportToExcel() {
+        log.info("Excel export request received");
+
+        try {
+            byte[] excelData = excelExportService.exportAllSurveysToExcel();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDisposition(ContentDisposition.builder("attachment")
+                    .filename("survey_data_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx")
+                    .build());
+
+            log.info("Excel file generated successfully");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(excelData);
+
+        } catch (Exception e) {
+            log.error("Error generating Excel file", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
