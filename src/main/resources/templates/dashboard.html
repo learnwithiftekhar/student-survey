@@ -495,26 +495,42 @@
 
 <!-- Add this script at the bottom of dashboard.html before </body> -->
 <script>
-    // Show loading overlay when Evaluate All is clicked
+    // Show loading overlay when evaluation is triggered
     document.addEventListener('DOMContentLoaded', function() {
-        const evaluateAllForm = document.querySelector('form[action*="evaluate-all"]');
+        function showProcessingOverlay(titleText, messageText) {
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
+            overlay.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-sm mx-auto text-center shadow-xl">
+                    <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">${titleText}</h3>
+                    <p class="text-sm text-gray-600">${messageText}</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
 
+        // Evaluate All
+        const evaluateAllForm = document.querySelector('form[action*="evaluate-all"]');
         if (evaluateAllForm) {
             evaluateAllForm.addEventListener('submit', function(e) {
-                // Create loading overlay
-                const overlay = document.createElement('div');
-                overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
-                overlay.innerHTML = `
-                    <div class="bg-white rounded-lg p-8 max-w-sm mx-auto text-center">
-                        <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Evaluating Surveys...</h3>
-                        <p class="text-sm text-gray-600">This may take several minutes. Please do not close this window.</p>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
+                if (e && e.defaultPrevented) return;
+                showProcessingOverlay('Evaluating Surveys...', 'Processing, please do not close this window.');
+            });
+        }
+
+        // Single Evaluate buttons (each survey row)
+        const singleEvaluateForms = document.querySelectorAll('form[action^="/dashboard/evaluate/"]');
+        if (singleEvaluateForms && singleEvaluateForms.length) {
+            singleEvaluateForms.forEach(function(frm) {
+                frm.addEventListener('submit', function(e) {
+                    if (e && e.defaultPrevented) return;
+                    // If already evaluated, onsubmit returns false in template; overlay won't be shown because submit won't fire
+                    showProcessingOverlay('Evaluating Survey...', 'Processing, please do not close this window.');
+                });
             });
         }
     });
