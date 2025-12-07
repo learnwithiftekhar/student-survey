@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
     private final SurveyService surveyService;
 
+
     /**
      * Root URL - Redirect to group selection
      * GET /
@@ -122,41 +123,45 @@ public class HomeController {
         // Check for validation errors
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors found: {}", bindingResult.getAllErrors());
-            model.addAttribute("surveyForm", surveyFormDTO);
             model.addAttribute("selectedGroup", selectedGroup);
             model.addAttribute("isAIEnabled", selectedGroup == GroupType.GROUP_A);
-            model.addAttribute("error", "Please correct the errors in the form.");
             return "student-survey-form";
         }
 
         // Custom validation for word counts
         if (!surveyFormDTO.isCoreProblemSummaryValid()) {
             log.warn("Core problem summary exceeds 120 words");
-            model.addAttribute("surveyForm", surveyFormDTO);
+            bindingResult.rejectValue(
+                    "coreProblemSummary",
+                    "coreProblemSummary.wordLimit",
+                    "Question 15: Please limit your answer to 120 words. You have " +
+                            surveyFormDTO.getCoreProblemSummaryWordCount() + " words.");
             model.addAttribute("selectedGroup", selectedGroup);
             model.addAttribute("isAIEnabled", selectedGroup == GroupType.GROUP_A);
-            model.addAttribute("error", "Question 15: Please limit your answer to 120 words. You have " +
-                    surveyFormDTO.getCoreProblemSummaryWordCount() + " words.");
             return "student-survey-form";
         }
 
         if (!surveyFormDTO.isLearningBenefitValid()) {
-            log.warn("Learning benefit answer not within 120-150 word range");
-            model.addAttribute("surveyForm", surveyFormDTO);
+            log.warn("Learning benefit answer has fewer than 120 words");
+            bindingResult.rejectValue(
+                    "learningBenefit",
+                    "learningBenefit.minWords",
+                    "Question 22: Please write at least 120 words. You have " +
+                            surveyFormDTO.getLearningBenefitWordCount() + " words.");
             model.addAttribute("selectedGroup", selectedGroup);
             model.addAttribute("isAIEnabled", selectedGroup == GroupType.GROUP_A);
-            model.addAttribute("error", "Question 22: Please write between 120 and 150 words. You have " +
-                    surveyFormDTO.getLearningBenefitWordCount() + " words.");
             return "student-survey-form";
         }
 
         // Validate "Others" device specification
         if (!surveyFormDTO.isDevicesOthersValid()) {
             log.warn("Others device selected but not specified");
-            model.addAttribute("surveyForm", surveyFormDTO);
+            bindingResult.rejectValue(
+                    "devicesOthersSpecify",
+                    "devicesOthersSpecify.required",
+                    "Please specify the 'Others' device.");
             model.addAttribute("selectedGroup", selectedGroup);
             model.addAttribute("isAIEnabled", selectedGroup == GroupType.GROUP_A);
-            model.addAttribute("error", "Please specify the 'Others' device.");
             return "student-survey-form";
         }
 

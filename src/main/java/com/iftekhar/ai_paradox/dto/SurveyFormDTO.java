@@ -20,7 +20,7 @@ public class SurveyFormDTO implements Serializable {
 
     private Long id;
 
-    @NotNull(message = "Group type is required")
+//    @NotNull(message = "Group type is required")@NotNull(message = "Group type is required")
     private GroupType groupType;
 
     // ===== Basic Information =====
@@ -170,14 +170,14 @@ public class SurveyFormDTO implements Serializable {
     }
 
     /**
-     * Validate word count for learning benefit (120-150 words)
+     * Validate word count for learning benefit (minimum 120 words)
      */
     public boolean isLearningBenefitValid() {
         if (learningBenefit == null || learningBenefit.trim().isEmpty()) {
             return false;
         }
         int wordCount = learningBenefit.trim().split("\\s+").length;
-        return wordCount >= 120 && wordCount <= 150;
+        return wordCount >= 120;
     }
 
     /**
