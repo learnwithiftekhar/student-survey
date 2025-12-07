@@ -453,7 +453,7 @@ public class SurveyService {
     }
 
     /**
-     * ✅ NEW - Get comprehensive statistics for a specific group
+     * Get enhanced group statistics
      */
     @Transactional(readOnly = true)
     public Map<String, Object> getGroupStatistics(GroupType groupType) {
@@ -473,9 +473,15 @@ public class SurveyService {
         List<SurveyForm> surveys = surveyFormRepository.findByGroupType(groupType);
 
         // Calculate evaluation statistics
-        int evaluatedCount = 0;
+        long evaluatedCount = 0;  // ✅ Changed from int to long
         List<Integer> totalScores = new ArrayList<>();
-        Map<String, Integer> ctLevelCounts = new HashMap<>();
+        Map<String, Integer> ctLevelCounts = new LinkedHashMap<>();
+
+        // Initialize CT level counts
+        ctLevelCounts.put("Advanced CT", 0);
+        ctLevelCounts.put("Competent CT", 0);
+        ctLevelCounts.put("Emerging CT", 0);
+        ctLevelCounts.put("At Risk", 0);
 
         for (SurveyForm survey : surveys) {
             List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
@@ -491,85 +497,53 @@ public class SurveyService {
                 int totalScore = evaluations.stream()
                         .mapToInt(e -> e.getScore() != null ? e.getScore() : 0)
                         .sum();
+
                 totalScores.add(totalScore);
 
-                // Categorize CT level
+                // Get CT level
                 Map<String, Object> overallScore = calculateOverallCTScore(totalScore);
                 if (overallScore != null && overallScore.containsKey("implication")) {
                     Map<String, String> implication = (Map<String, String>) overallScore.get("implication");
-                    String ctLevel = implication.get("label");
-                    ctLevelCounts.put(ctLevel, ctLevelCounts.getOrDefault(ctLevel, 0) + 1);
+                    String level = implication.get("label");
+                    ctLevelCounts.merge(level, 1, Integer::sum);
                 }
             }
         }
 
-        stats.put("evaluatedCount", evaluatedCount);
+        stats.put("evaluatedCount", evaluatedCount);  // Now a long
+        stats.put("pendingCount", totalCount - evaluatedCount);
         stats.put("ctLevelDistribution", ctLevelCounts);
 
-        // Calculate score statistics
+        // Calculate average score
         if (!totalScores.isEmpty()) {
             double averageScore = totalScores.stream()
                     .mapToInt(Integer::intValue)
                     .average()
                     .orElse(0.0);
-            int minScore = totalScores.stream()
-                    .mapToInt(Integer::intValue)
-                    .min()
-                    .orElse(0);
-            int maxScore = totalScores.stream()
-                    .mapToInt(Integer::intValue)
-                    .max()
-                    .orElse(0);
+            stats.put("averageScore", averageScore);
 
-            stats.put("averageScore", String.format("%.2f", averageScore));
-            stats.put("minScore", minScore);
-            stats.put("maxScore", maxScore);
-            stats.put("scoreRange", maxScore - minScore);
+            // Calculate median score
+            Collections.sort(totalScores);
+            double median;
+            int size = totalScores.size();
+            if (size % 2 == 0) {
+                median = (totalScores.get(size / 2 - 1) + totalScores.get(size / 2)) / 2.0;
+            } else {
+                median = totalScores.get(size / 2);
+            }
+            stats.put("medianScore", median);
+
+            // Calculate min/max scores
+            stats.put("minScore", totalScores.get(0));
+            stats.put("maxScore", totalScores.get(totalScores.size() - 1));
         } else {
-            stats.put("averageScore", "N/A");
-            stats.put("minScore", "N/A");
-            stats.put("maxScore", "N/A");
-            stats.put("scoreRange", "N/A");
+            stats.put("averageScore", 0.0);
+            stats.put("medianScore", 0.0);
+            stats.put("minScore", 0);
+            stats.put("maxScore", 0);
         }
-
-        // Demographics
-        Map<String, Long> locationDistribution = surveys.stream()
-                .collect(Collectors.groupingBy(SurveyForm::getLocation, Collectors.counting()));
-        stats.put("locationDistribution", locationDistribution);
 
         return stats;
-    }
-
-    /**
-     * ✅ NEW - Get comparison data between groups
-     */
-    @Transactional(readOnly = true)
-    public Map<String, Object> compareGroups() {
-        log.info("Generating group comparison data");
-
-        Map<String, Object> comparison = new HashMap<>();
-
-        Map<String, Object> groupAStats = getGroupStatistics(GroupType.GROUP_A);
-        Map<String, Object> groupBStats = getGroupStatistics(GroupType.GROUP_B);
-
-        comparison.put("groupA", groupAStats);
-        comparison.put("groupB", groupBStats);
-
-        // Calculate differences if both groups have evaluated surveys
-        if (groupAStats.containsKey("averageScore") && groupBStats.containsKey("averageScore")) {
-            try {
-                double avgA = Double.parseDouble(groupAStats.get("averageScore").toString());
-                double avgB = Double.parseDouble(groupBStats.get("averageScore").toString());
-                double difference = avgA - avgB;
-
-                comparison.put("averageScoreDifference", String.format("%.2f", difference));
-                comparison.put("groupAPerformsBetter", difference > 0);
-            } catch (NumberFormatException e) {
-                log.warn("Could not calculate score difference");
-            }
-        }
-
-        return comparison;
     }
 
     /**
@@ -611,4 +585,111 @@ public class SurveyService {
         result.put("implication", getScoreImplication(totalScore));
         return result;
     }
+
+    /**
+     * Get comprehensive group comparison statistics
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Object> compareGroups() {
+        log.info("Generating comprehensive group comparison");
+
+        Map<String, Object> comparison = new HashMap<>();
+
+        // Get statistics for both groups
+        Map<String, Object> groupAStats = getGroupStatistics(GroupType.GROUP_A);
+        Map<String, Object> groupBStats = getGroupStatistics(GroupType.GROUP_B);
+
+        comparison.put("groupA", groupAStats);
+        comparison.put("groupB", groupBStats);
+
+        // Calculate overall statistics
+        long totalSurveys = (long) groupAStats.get("totalSurveys") + (long) groupBStats.get("totalSurveys");
+        long totalEvaluated = (long) groupAStats.get("evaluatedCount") + (long) groupBStats.get("evaluatedCount");
+
+        comparison.put("totalSurveys", totalSurveys);
+        comparison.put("totalEvaluated", totalEvaluated);
+        comparison.put("totalPending", totalSurveys - totalEvaluated);
+
+        return comparison;
+    }
+    /**
+     * Get CT level distribution for a group
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Integer> getCtLevelDistribution(GroupType groupType) {
+        List<SurveyForm> surveys = surveyFormRepository.findByGroupType(groupType);
+        Map<String, Integer> distribution = new LinkedHashMap<>();
+
+        // Initialize all levels
+        distribution.put("Advanced CT", 0);
+        distribution.put("Competent CT", 0);
+        distribution.put("Emerging CT", 0);
+        distribution.put("At Risk", 0);
+
+        for (SurveyForm survey : surveys) {
+            List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
+
+            boolean isEvaluated = !evaluations.isEmpty() &&
+                    evaluations.stream().allMatch(eval -> eval.getScore() != null);
+
+            if (isEvaluated) {
+                int totalScore = evaluations.stream()
+                        .mapToInt(e -> e.getScore() != null ? e.getScore() : 0)
+                        .sum();
+
+                Map<String, Object> overallScore = calculateOverallCTScore(totalScore);
+                if (overallScore != null && overallScore.containsKey("implication")) {
+                    Map<String, String> implication = (Map<String, String>) overallScore.get("implication");
+                    String level = implication.get("label");
+                    distribution.merge(level, 1, Integer::sum);
+                }
+            }
+        }
+
+        return distribution;
+    }
+
+
+    /**
+     * Get average scores by question for a group
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Double> getAverageScoresByQuestion(GroupType groupType) {
+        List<SurveyForm> surveys = surveyFormRepository.findByGroupType(groupType);
+        Map<String, List<Integer>> scoresByQuestionId = new HashMap<>();
+
+        for (SurveyForm survey : surveys) {
+            List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
+
+            for (CtEvaluation eval : evaluations) {
+                if (eval.getScore() != null && eval.getQuestion() != null) {
+                    String questionId = eval.getQuestion().getId();
+                    scoresByQuestionId.computeIfAbsent(questionId, k -> new ArrayList<>()).add(eval.getScore());
+                }
+            }
+        }
+
+        Map<String, Double> averages = new LinkedHashMap<>();
+        for (Map.Entry<String, List<Integer>> entry : scoresByQuestionId.entrySet()) {
+            String questionId = entry.getKey();
+
+            // Get question title
+            String questionTitle = questionId;  // Default to question ID
+            Optional<CtQuestion> question = ctQuestionRepository.findById(questionId);
+            if (question.isPresent()) {
+                questionTitle = question.get().getTitle();  // ✅ Changed to getTitle()
+            }
+
+            double average = entry.getValue().stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0.0);
+            averages.put(questionTitle, average);
+        }
+
+        return averages;
+    }
+
+
+
 }

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Group Statistics - AI Paradox</title>
+    <th:block th:replace="fragments::header_scripts"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="h-full">
+<div class="min-h-full">
+    <th:block th:replace="fragments :: navbar"></th:block>
+    <th:block th:replace="fragments :: pageHeader('Group Statistics & Analysis')"></th:block>
+
+    <main>
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+
+            <!-- Back Button -->
+            <div class="mb-6">
+                <a th:href="@{/dashboard}"
+                   class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Overall Summary -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Overall Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center p-4 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2">Total Surveys</p>
+                        <p class="text-3xl font-bold text-blue-600" th:text="${comparison.totalSurveys}">0</p>
+                    </div>
+                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2">Evaluated</p>
+                        <p class="text-3xl font-bold text-green-600" th:text="${comparison.totalEvaluated}">0</p>
+                    </div>
+                    <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2">Pending</p>
+                        <p class="text-3xl font-bold text-yellow-600" th:text="${comparison.totalPending}">0</p>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2">Completion Rate</p>
+                        <p class="text-3xl font-bold text-purple-600">
+                            <span th:text="${comparison.totalSurveys > 0 ?
+                                #numbers.formatDecimal((comparison.totalEvaluated * 100.0 / comparison.totalSurveys), 1, 1) : 0}">0</span>%
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Group A Details -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border border-blue-200">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4">Group A (AI-Enabled)</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Total Surveys</span>
+                            <span class="text-lg font-bold text-blue-600" th:text="${comparison.groupA.totalSurveys}">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Evaluated</span>
+                            <span class="text-lg font-bold text-green-600" th:text="${comparison.groupA.evaluatedCount}">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Average Score</span>
+                            <span class="text-lg font-bold text-indigo-600"
+                                  th:text="${comparison.groupA.averageScore != null ?
+                                      #numbers.formatDecimal(comparison.groupA.averageScore, 1, 2) : 'N/A'}">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group B Details -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg shadow-md p-6 border border-purple-200">
+                    <h3 class="text-xl font-bold text-purple-900 mb-4">Group B (Control)</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Total Surveys</span>
+                            <span class="text-lg font-bold text-purple-600" th:text="${comparison.groupB.totalSurveys}">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Evaluated</span>
+                            <span class="text-lg font-bold text-green-600" th:text="${comparison.groupB.evaluatedCount}">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Average Score</span>
+                            <span class="text-lg font-bold text-purple-600"
+                                  th:text="${comparison.groupB.averageScore != null ?
+                                      #numbers.formatDecimal(comparison.groupB.averageScore, 1, 2) : 'N/A'}">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CT Level Distribution Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Group A Distribution -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Group A - CT Level Distribution</h3>
+                    <canvas id="groupAChart"></canvas>
+                    <div class="mt-4 space-y-2">
+                        <div th:each="entry : ${groupADistribution}" class="flex justify-between text-sm">
+                            <span class="text-gray-600" th:text="${entry.key}">Level</span>
+                            <span class="font-semibold" th:text="${entry.value}">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group B Distribution -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Group B - CT Level Distribution</h3>
+                    <canvas id="groupBChart"></canvas>
+                    <div class="mt-4 space-y-2">
+                        <div th:each="entry : ${groupBDistribution}" class="flex justify-between text-sm">
+                            <span class="text-gray-600" th:text="${entry.key}">Level</span>
+                            <span class="font-semibold" th:text="${entry.value}">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Group A Chart
+    const groupAData = {
+        labels: /*[[${groupADistribution.keySet()}]]*/ [],
+        data: /*[[${groupADistribution.values()}]]*/ []
+    };
+
+    // Group B Chart
+    const groupBData = {
+        labels: /*[[${groupBDistribution.keySet()}]]*/ [],
+        data: /*[[${groupBDistribution.values()}]]*/ []
+    };
+
+    // Chart colors
+    const colors = {
+        'Advanced CT': 'rgba(59, 130, 246, 0.8)',
+        'Competent CT': 'rgba(16, 185, 129, 0.8)',
+        'Emerging CT': 'rgba(251, 191, 36, 0.8)',
+        'At Risk': 'rgba(239, 68, 68, 0.8)'
+    };
+
+    // Create Group A Chart
+    new Chart(document.getElementById('groupAChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Array.from(groupAData.labels),
+            datasets: [{
+                data: Array.from(groupAData.data),
+                backgroundColor: Array.from(groupAData.labels).map(label => colors[label])
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Create Group B Chart
+    new Chart(document.getElementById('groupBChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Array.from(groupBData.labels),
+            datasets: [{
+                data: Array.from(groupBData.data),
+                backgroundColor: Array.from(groupBData.labels).map(label => colors[label])
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

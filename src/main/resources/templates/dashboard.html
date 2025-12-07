@@ -87,6 +87,92 @@
                 </div>
             </div>
 
+            <!-- Group Statistics Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Group A Statistics -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-blue-900">Group A (AI-Enabled)</h3>
+                        <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full"
+                              th:text="${groupACount}">0</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Total Surveys</span>
+                            <span class="text-lg font-bold text-blue-700" th:text="${groupACount}">0</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a th:href="@{/dashboard(group='GROUP_A')}"
+                           class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition">
+                            View Group A Surveys
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Group B Statistics -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg shadow-md p-6 border border-purple-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-purple-900">Group B (Control)</h3>
+                        <span class="bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full"
+                              th:text="${groupBCount}">0</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Total Surveys</span>
+                            <span class="text-lg font-bold text-purple-700" th:text="${groupBCount}">0</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a th:href="@{/dashboard(group='GROUP_B')}"
+                           class="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-800 transition">
+                            View Group B Surveys
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions for Group Analysis -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Group Analysis</h3>
+                    <a th:href="@{/dashboard/group-statistics}"
+                       class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        View Detailed Statistics
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Group Distribution</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            <span th:text="${groupACount}">0</span> :
+                            <span th:text="${groupBCount}">0</span>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">A : B Ratio</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Evaluation Rate</p>
+                        <p class="text-2xl font-bold text-gray-900"
+                           th:text="${totalItems > 0 ? #numbers.formatDecimal((evaluatedCount * 100.0 / totalItems), 1, 1) + '%' : '0%'}">0%</p>
+                        <p class="text-xs text-gray-500 mt-1">Overall Progress</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Pending Reviews</p>
+                        <p class="text-2xl font-bold text-yellow-600" th:text="${totalItems - evaluatedCount}">0</p>
+                        <p class="text-xs text-gray-500 mt-1">Awaiting Evaluation</p>
+                    </div>
+                </div>
+            </div>
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Total Surveys -->

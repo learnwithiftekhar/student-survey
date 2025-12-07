@@ -272,4 +272,31 @@ public class DashboardController {
             return "dashboard";
         }
     }
+
+    /**
+     * Show detailed group statistics page
+     */
+    @GetMapping("/group-statistics")
+    public String showGroupStatistics(Model model) {
+        log.info("Loading detailed group statistics");
+
+        try {
+            // Get comprehensive comparison
+            Map<String, Object> comparison = surveyService.compareGroups();
+            model.addAttribute("comparison", comparison);
+
+            // Get CT level distributions
+            Map<String, Integer> groupADistribution = surveyService.getCtLevelDistribution(GroupType.GROUP_A);
+            Map<String, Integer> groupBDistribution = surveyService.getCtLevelDistribution(GroupType.GROUP_B);
+
+            model.addAttribute("groupADistribution", groupADistribution);
+            model.addAttribute("groupBDistribution", groupBDistribution);
+
+            return "group-statistics";
+        } catch (Exception e) {
+            log.error("Error loading group statistics", e);
+            model.addAttribute("error", "Failed to load statistics: " + e.getMessage());
+            return "redirect:/dashboard";
+        }
+    }
 }
