@@ -38,7 +38,6 @@ public class SurveyForm {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Lob
     @Column(name = "ethical_considerations", nullable = false, columnDefinition = "TEXT")
     private String ethicalConsiderations; // NEW: Replaces levelOfStudy
 

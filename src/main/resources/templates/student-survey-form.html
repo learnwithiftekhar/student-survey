@@ -1411,13 +1411,13 @@
             },
             submitHandler: function(form) {
                 // Additional validation before submit
-                var q15Words = countWords($('#coreProblemSummary').val());
-                var q22Words = countWords($('#learningBenefit').val());
+                // var q15Words = countWords($('#coreProblemSummary').val());
+                // var q22Words = countWords($('#learningBenefit').val());
 
-                if (q15Words > 120) {
-                    alert('Question 15: Please limit your answer to 120 words. You currently have ' + q15Words + ' words.');
-                    return false;
-                }
+                // if (q15Words > 120) {
+                //     alert('Question 15: Please limit your answer to 120 words. You currently have ' + q15Words + ' words.');
+                //     return false;
+                // }
 
                 form.submit();
             }

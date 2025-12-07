@@ -130,11 +130,11 @@ public class HomeController {
 
         // Custom validation for word counts
         if (!surveyFormDTO.isCoreProblemSummaryValid()) {
-            log.warn("Core problem summary exceeds 120 words");
+            log.warn("Core problem summary has fewer than 120 words");
             bindingResult.rejectValue(
                     "coreProblemSummary",
                     "coreProblemSummary.wordLimit",
-                    "Question 15: Please limit your answer to 120 words. You have " +
+                    "Question 15: Please write at least 120 words. You have " +
                             surveyFormDTO.getCoreProblemSummaryWordCount() + " words.");
             model.addAttribute("selectedGroup", selectedGroup);
             model.addAttribute("isAIEnabled", selectedGroup == GroupType.GROUP_A);

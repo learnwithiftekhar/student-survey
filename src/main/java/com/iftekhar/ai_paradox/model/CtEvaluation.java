@@ -22,7 +22,6 @@ public class CtEvaluation {
     private CtQuestion question;
 
     // what they wrote
-    @Lob
     @Column(name = "student_answer", nullable = false, columnDefinition = "TEXT")
     private String studentAnswer;
 
@@ -33,19 +32,15 @@ public class CtEvaluation {
     @Column(name = "on_topic")
     private Boolean onTopic;
 
-    @Lob
     @Column(name = "skills_json")
     private String skillsJson;   // e.g. {"interpretation":4,"analysis":3}
 
-    @Lob
     @Column(name = "reason", columnDefinition = "TEXT")
     private String reason;
 
-    @Lob
     @Column(name = "strength", columnDefinition = "TEXT")
     private String strength;
 
-    @Lob
     @Column(name = "weakness", columnDefinition = "TEXT")
     private String weakness;
 

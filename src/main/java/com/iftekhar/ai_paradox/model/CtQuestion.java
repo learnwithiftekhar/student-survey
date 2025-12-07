@@ -23,11 +23,9 @@ public class CtQuestion {
     @Column(name = "title", length = 255)
     private String title;
 
-    @Lob
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;             // question text
 
-    @Lob
     @Column(name = "rubric", nullable = false, columnDefinition = "TEXT")
     private String rubric;           // marking guideline
 

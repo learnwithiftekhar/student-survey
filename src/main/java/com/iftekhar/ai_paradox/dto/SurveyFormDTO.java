@@ -166,7 +166,7 @@ public class SurveyFormDTO implements Serializable {
             return false;
         }
         int wordCount = coreProblemSummary.trim().split("\\s+").length;
-        return wordCount <= 120;
+        return wordCount >= 120;
     }
 
     /**
