@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex,
             RedirectAttributes redirectAttributes) {
 
+        // Ignore favicon requests - browsers automatically request this
+        if (ex.getMessage() != null && ex.getMessage().contains("favicon.ico")) {
+            return "redirect:/dashboard"; // Silent redirect without error message
+        }
+
         log.error("Resource not found: {}", ex.getMessage());
         redirectAttributes.addFlashAttribute("error", ex.getMessage());
         return "redirect:/dashboard";

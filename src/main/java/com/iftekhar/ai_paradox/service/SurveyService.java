@@ -11,6 +11,7 @@ import com.iftekhar.ai_paradox.model.SurveyForm;
 import com.iftekhar.ai_paradox.repository.CtEvaluationRepository;
 import com.iftekhar.ai_paradox.repository.CtQuestionRepository;
 import com.iftekhar.ai_paradox.repository.SurveyFormRepository;
+import com.iftekhar.ai_paradox.util.Constants;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -478,11 +479,11 @@ public class SurveyService {
         List<Integer> totalScores = new ArrayList<>();
         Map<String, Integer> ctLevelCounts = new LinkedHashMap<>();
 
-        // Initialize CT level counts
-        ctLevelCounts.put("Advanced CT", 0);
-        ctLevelCounts.put("Competent CT", 0);
-        ctLevelCounts.put("Emerging CT", 0);
-        ctLevelCounts.put("At Risk", 0);
+        // ✅ Initialize CT level counts with FULL labels from Constants
+        ctLevelCounts.put(Constants.CTLevelLabels.ADVANCED, 0);
+        ctLevelCounts.put(Constants.CTLevelLabels.COMPETENT, 0);
+        ctLevelCounts.put(Constants.CTLevelLabels.EMERGING, 0);
+        ctLevelCounts.put(Constants.CTLevelLabels.AT_RISK, 0);
 
         for (SurveyForm survey : surveys) {
             List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
@@ -621,11 +622,11 @@ public class SurveyService {
         List<SurveyForm> surveys = surveyFormRepository.findByGroupType(groupType);
         Map<String, Integer> distribution = new LinkedHashMap<>();
 
-        // Initialize all levels
-        distribution.put("Advanced CT", 0);
-        distribution.put("Competent CT", 0);
-        distribution.put("Emerging CT", 0);
-        distribution.put("At Risk", 0);
+        // ✅ Initialize with FULL labels from Constants
+        distribution.put(Constants.CTLevelLabels.ADVANCED, 0);
+        distribution.put(Constants.CTLevelLabels.COMPETENT, 0);
+        distribution.put(Constants.CTLevelLabels.EMERGING, 0);
+        distribution.put(Constants.CTLevelLabels.AT_RISK, 0);
 
         for (SurveyForm survey : surveys) {
             List<CtEvaluation> evaluations = ctEvaluationRepository.findBySurveyIdWithQuestion(survey.getId());
