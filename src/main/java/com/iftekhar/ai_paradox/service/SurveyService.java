@@ -183,6 +183,7 @@ public class SurveyService {
                             .updatedAt(survey.getUpdatedAt())
                             .submittedByIp(survey.getSubmittedByIp())
                             .isCompleted(survey.getIsCompleted())
+                            .groupType(survey.getGroupType())
                             .build();
 
                     // ✅ Add overall score if evaluated

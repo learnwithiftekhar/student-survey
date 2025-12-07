@@ -244,6 +244,9 @@
                         <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Group
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Student ID
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -273,10 +276,24 @@
                             </td>
                         </tr>
                         <tr th:each="survey : ${surveys}" class="hover:bg-gray-50">
+                            <!-- Group Column -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:if="${survey.groupType.name() == 'GROUP_A'}"
+                                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                    Group A
+                                </span>
+                                <span th:if="${survey.groupType.name() == 'GROUP_B'}"
+                                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                    Group B
+                                </span>
+                            </td>
                             <!-- Student ID -->
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900" th:text="${survey.studentId}">STU001</div>
-                                <div class="text-xs text-gray-500" th:text="'ID: ' + ${survey.id}">ID: 1</div>
+                                <div class="text-xs text-gray-500">
+                                    ID: <span th:text="${survey.id}">1</span> |
+                                    <span th:text="${survey.groupDisplayName}">Group A</span>
+                                </div>
                             </td>
 
                             <!-- Name -->
@@ -390,8 +407,12 @@
                                 <div class="flex items-center justify-end gap-3">
                                     <!-- View Button -->
                                     <a th:href="@{/dashboard/view/{id}(id=${survey.id})}"
-                                       class="text-indigo-600 hover:text-indigo-900 font-medium"
+                                       class="inline-flex items-center px-3 py-1.5 border border-indigo-600 text-xs font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
                                        title="View Survey">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
                                         View
                                     </a>
 
@@ -402,21 +423,13 @@
                                           th:onsubmit="${survey.evaluated} ? 'return false;' : 'return confirm(\'Are you sure you want to evaluate this survey? This will call OpenAI API and may take a few moments.\');'">
                                         <button type="submit"
                                                 th:disabled="${survey.evaluated}"
-                                                th:classappend="${survey.evaluated} ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-900 font-medium'"
+                                                th:classappend="${survey.evaluated} ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700 border-blue-600'"
+                                                class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                                                 th:title="${survey.evaluated} ? 'Already Evaluated' : 'Evaluate Answers with AI'">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                            </svg>
                                             Evaluate
-                                        </button>
-                                    </form>
-
-                                    <!-- Delete Button -->
-                                    <form th:action="@{/dashboard/delete/{id}(id=${survey.id})}"
-                                          method="post"
-                                          class="inline"
-                                          onsubmit="return confirm('Are you sure you want to delete this survey? This action cannot be undone.');">
-                                        <button type="submit"
-                                                class="text-red-600 hover:text-red-900 font-medium"
-                                                title="Delete Survey">
-                                            Delete
                                         </button>
                                     </form>
                                 </div>
