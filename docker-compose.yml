@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # --- Database Service ---
+  postgresdb:
+    image: postgres:15-alpine
+    container_name: production-postgres
+    restart: always
+    environment:
+      # These match your application.yml defaults exactly
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=ai_paradox
+    ports:
+      - "5432:5432" # External access for DBeaver
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    healthcheck:
+      # Checks if user 'postgres' can connect to db 'ai_paradox'
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ai_paradox"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Spring Boot App ---
+  app:
+    build: .
+    container_name: ai-paradox-app
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      # 1. Database Configuration
+      - DB_HOST=postgresdb   # Overrides 'localhost' from your yml
+      - DB_USER=postgres
+      - DB_PASSWORD=1234
+
+      # 2. OpenAI Key Injection
+      # This pulls the key from your computer's environment variables
+      - OPEN_AI_KEY=${OPEN_AI_KEY}
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+volumes:
+  postgres-data:
+
+networks:
+  backend-network:
